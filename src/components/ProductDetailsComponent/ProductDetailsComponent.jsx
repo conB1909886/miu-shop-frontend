@@ -1,6 +1,6 @@
-import { Col, Image, Rate, Row } from 'antd';
-import React from 'react';
-import imageProductSmall from '../../assets/images/imagesmall.webp';
+import { Col, Image, Rate, Row } from "antd";
+import React from "react";
+import imageProductSmall from "../../assets/images/imagesmall.webp";
 import {
   WrapperStyleImageSmall,
   WrapperStyleColImage,
@@ -12,23 +12,24 @@ import {
   WrapperQualityProduct,
   WrapperInputNumber,
   WrapperBtnQualityProduct,
-} from './style';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import ButtonComponent from '../ButtonComponent/ButtonComponent';
-import * as ProductService from '../../services/ProductService';
-import { useQuery } from '@tanstack/react-query';
-import Loading from '../LoadingComponent/Loading';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { addOrderProduct, resetOrder } from '../../redux/slides/orderSlide';
-import { convertPrice, initFacebookSDK } from '../../utils';
-import { useEffect } from 'react';
-import * as message from '../Message/Message';
-import LikeButtonComponent from '../LikeButtonComponent/LikeButtonComponent';
-import CommentComponent from '../CommentComponent/CommentComponent';
-import { useMemo } from 'react';
-import * as CommentService from '../../services/CommentService';
+} from "./style";
+import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import ReactStars from "react-rating-stars-component";
+import ButtonComponent from "../ButtonComponent/ButtonComponent";
+import * as ProductService from "../../services/ProductService";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../LoadingComponent/Loading";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { addOrderProduct, resetOrder } from "../../redux/slides/orderSlide";
+import { convertPrice, initFacebookSDK } from "../../utils";
+import { useEffect } from "react";
+import * as message from "../Message/Message";
+import LikeButtonComponent from "../LikeButtonComponent/LikeButtonComponent";
+import CommentComponent from "../CommentComponent/CommentComponent";
+import { useMemo } from "react";
+import * as CommentService from "../../services/CommentService";
 
 const ProductDetailsComponent = ({ idProduct }) => {
   const [numProduct, setNumProduct] = useState(1);
@@ -36,7 +37,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
   const order = useSelector((state) => state.order);
   const [errorLimitOrder, setErrorLimitOrder] = useState(false);
   const [showCommentInput, setShowCommentInput] = useState(false);
-  const [commentContent, setCommentContent] = useState('');
+  const [commentContent, setCommentContent] = useState("");
+  const [rating, setRating] = useState(5);
   const [comments, setComments] = useState([]);
 
   const navigate = useNavigate();
@@ -60,7 +62,9 @@ const ProductDetailsComponent = ({ idProduct }) => {
   }, []);
 
   useEffect(() => {
-    const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
+    const orderRedux = order?.orderItems?.find(
+      (item) => item.product === productDetails?._id
+    );
     if (
       orderRedux?.amount + numProduct <= orderRedux?.countInstock ||
       (!orderRedux && productDetails?.countInStock > 0)
@@ -73,7 +77,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
   useEffect(() => {
     if (order.isSucessOrder) {
-      message.success('Đã thêm vào giỏ hàng');
+      message.success("Đã thêm vào giỏ hàng");
     }
     return () => {
       dispatch(resetOrder());
@@ -81,7 +85,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
   }, [order.isSucessOrder]);
 
   const handleChangeCount = (type, limited) => {
-    if (type === 'increase') {
+    if (type === "increase") {
       if (!limited) {
         setNumProduct(numProduct + 1);
       }
@@ -93,9 +97,9 @@ const ProductDetailsComponent = ({ idProduct }) => {
   };
 
   const { isLoading, data: productDetails } = useQuery(
-    ['product-details', idProduct],
+    ["product-details", idProduct],
     fetchGetDetailsProduct,
-    { enabled: !!idProduct },
+    { enabled: !!idProduct }
   );
 
   React.useEffect(() => {
@@ -105,15 +109,18 @@ const ProductDetailsComponent = ({ idProduct }) => {
         return;
       }
       const items = data.filter((i) => i.productId === productDetails?._id);
+      console.log(items);
       setComments(items);
     });
-  }, []);
+  }, [productDetails?._id, user?.access_token]);
 
   const handleAddOrderProduct = () => {
     if (!user?.id) {
-      navigate('/sign-in', { state: location?.pathname });
+      navigate("/sign-in", { state: location?.pathname });
     } else {
-      const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
+      const orderRedux = order?.orderItems?.find(
+        (item) => item.product === productDetails?._id
+      );
       if (
         orderRedux?.amount + numProduct <= orderRedux?.countInstock ||
         (!orderRedux && productDetails?.countInStock > 0)
@@ -129,7 +136,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
               discount: productDetails?.discount,
               countInstock: productDetails?.countInStock,
             },
-          }),
+          })
         );
       } else {
         setErrorLimitOrder(true);
@@ -147,9 +154,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
   const handleSubmitComment = () => {
     const body = {
-      username: user.email,
+      username: user.name,
       content: commentContent,
       productId: productDetails._id,
+      rating,
     };
     CommentService.createComment(body, user?.access_token).then(() => {
       CommentService.getAllComment(user?.access_token).then((res) => {
@@ -162,6 +170,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
   };
 
   const handleDeleteComment = (comment) => {
+    const confirm = window.confirm("Ban co muon xoa hay khong?");
+    if (!confirm) {
+      return;
+    }
     CommentService.deleteComment(comment._id, user?.access_token).then(() => {
       CommentService.getAllComment(user?.access_token).then((res) => {
         const data = res.data;
@@ -171,27 +183,46 @@ const ProductDetailsComponent = ({ idProduct }) => {
     });
   };
 
+  const ratingChanged = (newRating) => {
+    setRating(newRating);
+  };
+
   return (
     <Loading isLoading={isLoading}>
       <Row
         style={{
-          padding: '16px',
-          background: '#fff',
-          borderRadius: '4px',
-          height: '100%',
+          padding: "16px",
+          background: "#fff",
+          borderRadius: "4px",
+          height: "100%",
         }}
       >
-        <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>
-          <Image src={productDetails?.image} alt="image prodcut" preview={false} />
+        <Col
+          span={10}
+          style={{ borderRight: "1px solid #e5e5e5", paddingRight: "8px" }}
+        >
+          <Image
+            src={productDetails?.image}
+            alt="image prodcut"
+            preview={false}
+          />
         </Col>
-        <Col span={14} style={{ paddingLeft: '10px' }}>
-          <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
+        <Col span={14} style={{ paddingLeft: "10px" }}>
+          <WrapperStyleNameProduct>
+            {productDetails?.name}
+          </WrapperStyleNameProduct>
           <div>
-            <Rate allowHalf defaultValue={productDetails?.rating} value={productDetails?.rating} />
+            <Rate
+              allowHalf
+              defaultValue={productDetails?.rating}
+              value={productDetails?.rating}
+            />
             <WrapperStyleTextSell> | Da ban 1000+</WrapperStyleTextSell>
           </div>
           <WrapperPriceProduct>
-            <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
+            <WrapperPriceTextProduct>
+              {convertPrice(productDetails?.price)}
+            </WrapperPriceTextProduct>
           </WrapperPriceProduct>
           <WrapperAddressProduct>
             <span>Giao đến </span>
@@ -201,29 +232,29 @@ const ProductDetailsComponent = ({ idProduct }) => {
           <LikeButtonComponent
             dataHref={
               process.env.REACT_APP_IS_LOCAL
-                ? 'https://developers.facebook.com/docs/plugins/'
+                ? "https://developers.facebook.com/docs/plugins/"
                 : window.location.href
             }
           />
           <div
             style={{
-              margin: '10px 0 20px',
-              padding: '10px 0',
-              borderTop: '1px solid #e5e5e5',
-              borderBottom: '1px solid #e5e5e5',
+              margin: "10px 0 20px",
+              padding: "10px 0",
+              borderTop: "1px solid #e5e5e5",
+              borderBottom: "1px solid #e5e5e5",
             }}
           >
-            <div style={{ marginBottom: '10px' }}>Số lượng</div>
+            <div style={{ marginBottom: "10px" }}>Số lượng</div>
             <WrapperQualityProduct>
               <button
                 style={{
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
                 }}
-                onClick={() => handleChangeCount('decrease', numProduct === 1)}
+                onClick={() => handleChangeCount("decrease", numProduct === 1)}
               >
-                <MinusOutlined style={{ color: '#000', fontSize: '20px' }} />
+                <MinusOutlined style={{ color: "#000", fontSize: "20px" }} />
               </button>
               <WrapperInputNumber
                 onChange={onChange}
@@ -235,95 +266,126 @@ const ProductDetailsComponent = ({ idProduct }) => {
               />
               <button
                 style={{
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
                 }}
                 onClick={() =>
-                  handleChangeCount('increase', numProduct === productDetails?.countInStock)
+                  handleChangeCount(
+                    "increase",
+                    numProduct === productDetails?.countInStock
+                  )
                 }
               >
-                <PlusOutlined style={{ color: '#000', fontSize: '20px' }} />
+                <PlusOutlined style={{ color: "#000", fontSize: "20px" }} />
               </button>
             </WrapperQualityProduct>
           </div>
-          <div style={{ display: 'flex', aliggItems: 'center', gap: '12px' }}>
+          <div style={{ display: "flex", aliggItems: "center", gap: "12px" }}>
             <div>
               <ButtonComponent
                 size={40}
                 styleButton={{
-                  background: 'rgb(255, 57, 69)',
-                  height: '48px',
-                  width: '220px',
-                  border: 'none',
-                  borderRadius: '4px',
+                  background: "rgb(255, 57, 69)",
+                  height: "48px",
+                  width: "220px",
+                  border: "none",
+                  borderRadius: "4px",
                 }}
                 onClick={handleAddOrderProduct}
-                textbutton={'Chọn mua'}
+                textbutton={"Chọn mua"}
                 styleTextButton={{
-                  color: '#fff',
-                  fontSize: '15px',
-                  fontWeight: '700',
+                  color: "#fff",
+                  fontSize: "15px",
+                  fontWeight: "700",
                 }}
               ></ButtonComponent>
-              {errorLimitOrder && <div style={{ color: 'red' }}>San pham het hang</div>}
+              {errorLimitOrder && (
+                <div style={{ color: "red" }}>San pham het hang</div>
+              )}
             </div>
           </div>
-          <div style={{ marginTop: '24px' }}>
+          <div style={{ marginTop: "24px" }}>
             <p>{productDetails?.description}</p>
           </div>
         </Col>
       </Row>
       <div
         style={{
-          padding: '16px',
-          background: '#fff',
-          borderRadius: '4px',
-          height: '100%',
-          marginTop: '24px',
+          padding: "16px",
+          background: "#fff",
+          borderRadius: "4px",
+          height: "100%",
+          marginTop: "24px",
         }}
       >
         <h3>Bình luận</h3>
         <ButtonComponent
           size={40}
           styleButton={{
-            background: '#fff',
-            height: '48px',
-            width: '220px',
-            border: '1px solid rgb(13, 92, 182)',
-            borderRadius: '4px',
+            background: "#fff",
+            height: "48px",
+            width: "220px",
+            border: "1px solid rgb(13, 92, 182)",
+            borderRadius: "4px",
           }}
-          textbutton={'Thêm bình luận'}
-          styleTextButton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
+          textbutton={"Thêm bình luận"}
+          styleTextButton={{ color: "rgb(13, 92, 182)", fontSize: "15px" }}
           onClick={handleAddComment}
         ></ButtonComponent>
         {showCommentInput && (
           <div>
-            <div style={{ marginTop: '24px' }}>
-              <textarea value={commentContent} onChange={handleCommentChange} rows="4" cols="50" />
+            <div style={{ marginTop: "24px" }}>
+              <label>Danh gia</label>
+              <ReactStars
+                count={5}
+                onChange={ratingChanged}
+                size={24}
+                activeColor="#ffd700"
+              />
+
+              <textarea
+                value={commentContent}
+                onChange={handleCommentChange}
+                rows="4"
+                cols="50"
+              />
             </div>
             <ButtonComponent
               size={40}
               styleButton={{
-                background: '#fff',
-                height: '48px',
-                border: '1px solid rgb(13, 92, 182)',
-                borderRadius: '4px',
+                background: "#fff",
+                height: "48px",
+                border: "1px solid rgb(13, 92, 182)",
+                borderRadius: "4px",
               }}
-              textbutton={'Thêm'}
-              styleTextButton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
+              textbutton={"Thêm"}
+              styleTextButton={{ color: "rgb(13, 92, 182)", fontSize: "15px" }}
               onClick={handleSubmitComment}
             ></ButtonComponent>
           </div>
         )}
         <div className="comment-list">
           {comments.map((comment) => (
-            <div key={comment._id} style={{ marginTop: '24px', borderBottom: '1px solid #eee' }}>
+            <div
+              key={comment._id}
+              style={{ marginTop: "24px", borderBottom: "1px solid #eee" }}
+            >
               <p>{comment.username}</p>
-              <p style={{ marginTop: '10px' }}>{comment.content}</p>
-              <a href onClick={() => handleDeleteComment(comment)}>
-                Xóa
-              </a>
+              <ReactStars
+                count={5}
+                value={comment.rating}
+                onChange={ratingChanged}
+                edit={false}
+                size={24}
+                activeColor="#ffd700"
+              />
+              <p style={{ marginTop: "10px" }}>{comment.content}</p>
+              {comment.username === user.name ? (
+                <a href onClick={() => handleDeleteComment(comment)}>
+                  Xóa
+                </a>
+              ) : null}
             </div>
           ))}
         </div>
