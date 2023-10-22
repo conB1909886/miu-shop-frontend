@@ -1,4 +1,6 @@
-import { axiosJWT } from './UserService';
+import axios from 'axios';
+
+export const axiosJWT = axios.create();
 
 export const createComment = async (data, access_token) => {
   const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/comment/create`, data, {
@@ -41,9 +43,7 @@ export const getDetailsComment = async (id, access_token) => {
 
 export const getAllComment = async (access_token) => {
   const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/comment/get-all`, {
-    headers: {
-      token: `Bearer ${access_token}`,
-    },
+    headers: {},
   });
   return res.data;
 };

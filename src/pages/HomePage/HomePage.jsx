@@ -1,23 +1,23 @@
-import React from "react";
-import SliderComponent from "../../components/SliderComponent/SliderComponent";
-import TypeProduct from "../../components/TypeProduct/TypeProduct";
-import {
-  WrapperButtonMore,
-  WrapperProducts,
-  WrapperTypeProduct,
-} from "./style";
-import slider1 from "../../assets/images/slider_11.jpg";
-import slider2 from "../../assets/images/slider_2.webp";
-import slider3 from "../../assets/images/slider_10.jpg";
+import React from 'react';
+import SliderComponent from '../../components/SliderComponent/SliderComponent';
+import TypeProduct from '../../components/TypeProduct/TypeProduct';
+import { WrapperButtonMore, WrapperProducts, WrapperTypeProduct } from './style';
+import slider1 from '../../assets/images/slider_11.jpg';
+import slider2 from '../../assets/images/slider_2.webp';
+import slider3 from '../../assets/images/slider_10.jpg';
 
-import CardComponent from "../../components/CardComponent/CardComponent";
-import { useQuery } from "@tanstack/react-query";
-import * as ProductService from "../../services/ProductService";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import Loading from "../../components/LoadingComponent/Loading";
-import { useDebounce } from "../../hooks/useDebounce";
-import { useEffect } from "react";
+import CardComponent from '../../components/CardComponent/CardComponent';
+import { useQuery } from '@tanstack/react-query';
+import * as ProductService from '../../services/ProductService';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import Loading from '../../components/LoadingComponent/Loading';
+import { useDebounce } from '../../hooks/useDebounce';
+import { useEffect } from 'react';
+import DiscountProducts from './DiscountProducts';
+import BestSellerProducts from './BestSellerProducts';
+import BestRatingProducts from './BestRatingProducts';
+import Footer from '../../components/Footer';
 
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
@@ -36,7 +36,7 @@ const HomePage = () => {
 
   const fetchAllTypeProduct = async () => {
     const res = await ProductService.getAllTypeProduct();
-    if (res?.status === "OK") {
+    if (res?.status === 'OK') {
       setTypeProducts(res?.data);
     }
   };
@@ -45,7 +45,7 @@ const HomePage = () => {
     isLoading,
     data: products,
     isPreviousData,
-  } = useQuery(["products", limit, searchDebounce], fetchProductAll, {
+  } = useQuery(['products', limit, searchDebounce], fetchProductAll, {
     retry: 3,
     retryDelay: 1000,
     keepPreviousData: true,
@@ -56,85 +56,76 @@ const HomePage = () => {
   }, []);
 
   return (
-    <Loading isLoading={isLoading || loading}>
-      <div style={{ width: "1270px", margin: "0 auto" }}>
-        <WrapperTypeProduct>
-          {typeProducts.map((item) => {
-            return <TypeProduct name={item} key={item} />;
-          })}
-        </WrapperTypeProduct>
-      </div>
-      <div
-        className="body"
-        style={{ width: "100%", backgroundColor: "#efefef" }}
-      >
-        <div
-          id="container"
-          style={{ height: "1000px", width: "1270px", margin: "0 auto" }}
-        >
-          <SliderComponent arrImages={[slider1, slider2, slider3]} />
-          <div style={{ margin: "24px" }}>
-            <h2>Sản phẩm bán chạy</h2>
-            <WrapperProducts>
-              {products?.data?.map((product) => {
-                return (
-                  <CardComponent
-                    key={product._id}
-                    countInStock={product.countInStock}
-                    description={product.description}
-                    image={product.image}
-                    name={product.name}
-                    price={product.price}
-                    rating={product.rating}
-                    type={product.type}
-                    selled={product.selled}
-                    discount={product.discount}
-                    id={product._id}
-                  />
-                );
-              })}
-            </WrapperProducts>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "10px",
-              }}
-            >
-              <WrapperButtonMore
-                textbutton={isPreviousData ? "Load more" : "Xem thêm"}
-                type="outline"
-                styleButton={{
-                  border: `1px solid ${
-                    products?.total === products?.data?.length
-                      ? "#f5f5f5"
-                      : "#9255FD"
-                  }`,
-                  color: `${
-                    products?.total === products?.data?.length
-                      ? "#f5f5f5"
-                      : "#9255FD"
-                  }`,
-                  width: "240px",
-                  height: "38px",
-                  borderRadius: "4px",
+    <div>
+      <Loading isLoading={isLoading || loading}>
+        <div style={{ width: '1270px', margin: '0 auto' }}>
+          <WrapperTypeProduct>
+            {typeProducts.map((item) => {
+              return <TypeProduct name={item} key={item} />;
+            })}
+          </WrapperTypeProduct>
+        </div>
+        <div className="body" style={{ width: '100%', backgroundColor: '#efefef' }}>
+          <div id="container" style={{ width: '1270px', margin: '0 auto' }}>
+            <SliderComponent arrImages={[slider1, slider2, slider3]} />
+            <div>
+              <h2>Sản phẩm mới nhất</h2>
+              <WrapperProducts>
+                {products?.data?.map((product) => {
+                  return (
+                    <CardComponent
+                      key={product._id}
+                      countInStock={product.countInStock}
+                      description={product.description}
+                      image={product.image}
+                      name={product.name}
+                      price={product.price}
+                      rating={product.rating}
+                      type={product.type}
+                      selled={product.selled}
+                      discount={product.discount}
+                      id={product._id}
+                    />
+                  );
+                })}
+              </WrapperProducts>
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginTop: '10px',
                 }}
-                disabled={
-                  products?.total === products?.data?.length ||
-                  products?.totalPage === 1
-                }
-                styleTextButton={{
-                  fontWeight: 500,
-                  color: products?.total === products?.data?.length && "#fff",
-                }}
-                onClick={() => setLimit((prev) => prev + 6)}
-              />
+              >
+                <WrapperButtonMore
+                  textbutton={isPreviousData ? 'Load more' : 'Xem thêm'}
+                  type="outline"
+                  styleButton={{
+                    border: `1px solid ${
+                      products?.total === products?.data?.length ? '#f5f5f5' : '#9255FD'
+                    }`,
+                    color: `${products?.total === products?.data?.length ? '#f5f5f5' : '#9255FD'}`,
+                    width: '240px',
+                    height: '38px',
+                    borderRadius: '4px',
+                  }}
+                  disabled={products?.total === products?.data?.length || products?.totalPage === 1}
+                  styleTextButton={{
+                    fontWeight: 500,
+                    color: products?.total === products?.data?.length && '#fff',
+                  }}
+                  onClick={() => setLimit((prev) => prev + 6)}
+                />
+              </div>
             </div>
+            <DiscountProducts />
+            <BestSellerProducts />
+            <BestRatingProducts />
           </div>
         </div>
-      </div>
-    </Loading>
+      </Loading>
+      <Footer />
+    </div>
   );
 };
 
