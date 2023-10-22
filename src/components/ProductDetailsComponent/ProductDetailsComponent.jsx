@@ -319,7 +319,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
           marginTop: "24px",
         }}
       >
-        <h3>Bình luận</h3>
+        <h3>*Bình luận</h3>
         <ButtonComponent
           size={40}
           styleButton={{
@@ -336,7 +336,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         {showCommentInput && (
           <div>
             <div style={{ marginTop: "24px" }}>
-              <label>Danh gia</label>
+              <h3>*Đánh Giá</h3>
               <ReactStars
                 count={5}
                 onChange={ratingChanged}
