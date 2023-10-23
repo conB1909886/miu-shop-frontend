@@ -40,6 +40,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
   const [commentContent, setCommentContent] = useState('');
   const [rating, setRating] = useState(5);
   const [comments, setComments] = useState([]);
+  const [showAddComment, setShowAddComment] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,10 +108,13 @@ const ProductDetailsComponent = ({ idProduct }) => {
         return;
       }
       const items = data.filter((i) => i.productId === productDetails?._id);
-      console.log(items);
+      const hasCommentForThisUser = items.find((i) => i.name === user.name);
+      if (hasCommentForThisUser) {
+        setShowAddComment(false);
+      }
       setComments(items);
     });
-  }, [productDetails?._id, user?.access_token]);
+  }, [productDetails?._id, user]);
 
   const handleAddOrderProduct = () => {
     if (!user?.id) {
@@ -150,15 +154,20 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
   const handleSubmitComment = () => {
     const body = {
-      username: user.name,
+      name: user.name,
       content: commentContent,
       productId: productDetails._id,
       rating,
+      commentDate: new Date().getTime(),
     };
     CommentService.createComment(body, user?.access_token).then(() => {
       CommentService.getAllComment(user?.access_token).then((res) => {
         const data = res.data;
         const items = data.filter((i) => i.productId === productDetails._id);
+        const hasCommentForThisUser = items.find((i) => i.name === user.name);
+        if (hasCommentForThisUser) {
+          setShowAddComment(false);
+        }
         setComments(items);
         setShowCommentInput(false);
       });
@@ -174,6 +183,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
       CommentService.getAllComment(user?.access_token).then((res) => {
         const data = res.data;
         const items = data.filter((i) => i.productId === productDetails._id);
+        const hasCommentForThisUser = items.find((i) => i.name === user.name);
+        if (hasCommentForThisUser) {
+          setShowAddComment(false);
+        }
         setComments(items);
       });
     });
@@ -296,7 +309,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         }}
       >
         <h3>*Bình luận</h3>
-        {!!user?.name && (
+        {!!user?.name && showAddComment && (
           <ButtonComponent
             size={40}
             styleButton={{
@@ -336,7 +349,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         <div className="comment-list">
           {comments.map((comment) => (
             <div key={comment._id} style={{ marginTop: '24px', borderBottom: '1px solid #eee' }}>
-              <p>{comment.username}</p>
+              <p>{comment.name}</p>
               <ReactStars
                 count={5}
                 value={comment.rating}
@@ -346,7 +359,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 activeColor="#ffd700"
               />
               <p style={{ marginTop: '10px' }}>{comment.content}</p>
-              {comment.username === user.name ? (
+              {comment.name === user.name ? (
                 <a href onClick={() => handleDeleteComment(comment)}>
                   Xóa
                 </a>
