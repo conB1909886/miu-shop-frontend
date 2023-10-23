@@ -111,6 +111,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
       const hasCommentForThisUser = items.find((i) => i.name === user.name);
       if (hasCommentForThisUser) {
         setShowAddComment(false);
+      } else {
+        setShowAddComment(true);
       }
       setComments(items);
     });
@@ -167,6 +169,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
         const hasCommentForThisUser = items.find((i) => i.name === user.name);
         if (hasCommentForThisUser) {
           setShowAddComment(false);
+        } else {
+          setShowAddComment(true);
         }
         setComments(items);
         setShowCommentInput(false);
@@ -186,6 +190,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
         const hasCommentForThisUser = items.find((i) => i.name === user.name);
         if (hasCommentForThisUser) {
           setShowAddComment(false);
+        } else {
+          setShowAddComment(true);
         }
         setComments(items);
       });
