@@ -170,6 +170,9 @@ const AdminProduct = () => {
   });
   const { isLoading: isLoadingProducts, data: products } = queryProduct;
   const renderAction = () => {
+    if (user.role === 'viewer') {
+      return null;
+    }
     return (
       <div>
         <DeleteOutlined
@@ -319,6 +322,17 @@ const AdminProduct = () => {
     {
       title: 'Type',
       dataIndex: 'type',
+    },
+    {
+      title: 'Inventory',
+      dataIndex: 'inventory',
+      render: (_, record) => {
+        if (!allInventory?.data?.data?.length) {
+          return '-';
+        }
+        const item = allInventory.data.data.find((i) => i._id === record.inventory);
+        return item ? item.name : '-';
+      },
     },
     {
       title: 'Count in Stock',

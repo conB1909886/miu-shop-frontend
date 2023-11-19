@@ -21,7 +21,8 @@ html {
 }
 
 #basic_isDelivered,
-#basic_isPaid {
+#basic_isPaid,
+#basic_isAdmin {
   width: 200px;
 }
 

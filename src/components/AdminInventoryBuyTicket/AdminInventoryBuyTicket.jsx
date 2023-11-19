@@ -171,6 +171,9 @@ const AdminInventoryBuyTicket = () => {
 
   const { isLoading: isLoadingInventoryBuyTickets, data: inventories } = queryInventoryBuyTicket;
   const renderAction = () => {
+    if (user.role === 'viewer') {
+      return null;
+    }
     return (
       <div>
         <DeleteOutlined

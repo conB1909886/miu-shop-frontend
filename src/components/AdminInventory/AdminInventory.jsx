@@ -137,6 +137,9 @@ const AdminInventory = () => {
 
   const { isLoading: isLoadingInventorys, data: inventories } = queryInventory;
   const renderAction = () => {
+    if (user.role === 'viewer') {
+      return null;
+    }
     return (
       <div>
         <DeleteOutlined

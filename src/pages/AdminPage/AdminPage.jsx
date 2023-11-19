@@ -29,7 +29,7 @@ import Loading from '../../components/LoadingComponent/Loading';
 const AdminPage = () => {
   const user = useSelector((state) => state?.user);
 
-  const items = [
+  const initialItems = [
     getItem('Người dùng', 'users', <UserOutlined />),
     getItem('Sản phẩm', 'products', <AppstoreOutlined />),
     getItem('Đơn hàng', 'orders', <ShoppingCartOutlined />),
@@ -37,6 +37,17 @@ const AdminPage = () => {
     getItem('Phiếu nhập kho', 'inventory-buy-ticket', <SolutionOutlined />),
     getItem('Thống kê doanh thu', 'stats', <ContainerOutlined />),
   ];
+  const [items, setItems] = useState(initialItems);
+
+  React.useEffect(() => {
+    if (user.role === 'viewer') {
+      setItems([
+        getItem('Người dùng', 'users', <UserOutlined />),
+        getItem('Sản phẩm', 'products', <AppstoreOutlined />),
+        getItem('Đơn hàng', 'orders', <ShoppingCartOutlined />),
+      ]);
+    }
+  }, [user]);
 
   const [keySelected, setKeySelected] = useState('');
   const getAllOrder = async () => {

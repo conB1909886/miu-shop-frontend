@@ -30,6 +30,7 @@ const AdminUser = () => {
     email: '',
     phone: '',
     isAdmin: false,
+    role: '',
     avatar: '',
     address: '',
   });
@@ -73,6 +74,7 @@ const AdminUser = () => {
         email: res?.data?.email,
         phone: res?.data?.phone,
         isAdmin: res?.data?.isAdmin,
+        role: res?.data?.role,
         address: res?.data?.address,
         avatar: res.data?.avatar,
       });
@@ -118,6 +120,9 @@ const AdminUser = () => {
   const users = queryClient.getQueryData(['users']);
   const isFetchingUser = useIsFetching(['users']);
   const renderAction = () => {
+    if (user.role === 'viewer') {
+      return null;
+    }
     return (
       <div>
         <DeleteOutlined
@@ -199,20 +204,6 @@ const AdminUser = () => {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text) =>
-    //   searchedColumn === dataIndex ? (
-    //     // <Highlighter
-    //     //   highlightStyle={{
-    //     //     backgroundColor: '#ffc069',
-    //     //     padding: 0,
-    //     //   }}
-    //     //   searchWords={[searchText]}
-    //     //   autoEscape
-    //     //   textToHighlight={text ? text.toString() : ''}
-    //     // />
-    //   ) : (
-    //     text
-    //   ),
   });
 
   const columns = [
@@ -249,6 +240,11 @@ const AdminUser = () => {
       ],
     },
     {
+      title: 'Role',
+      dataIndex: 'role',
+      ...getColumnSearchProps('role'),
+    },
+    {
       title: 'Phone',
       dataIndex: 'phone',
       sorter: (a, b) => a.phone - b.phone,
@@ -263,7 +259,7 @@ const AdminUser = () => {
   const dataTable =
     users?.data?.length > 0 &&
     users?.data?.map((user) => {
-      return { ...user, key: user._id, isAdmin: user.isAdmin ? 'TRUE' : 'FALSE' };
+      return { ...user, key: user._id, isAdmin: user.isAdmin ? 'Yes' : 'No' };
     });
 
   useEffect(() => {
@@ -290,6 +286,7 @@ const AdminUser = () => {
       email: '',
       phone: '',
       isAdmin: false,
+      role: '',
     });
     form.resetFields();
   };
@@ -322,6 +319,13 @@ const AdminUser = () => {
     setStateUserDetails({
       ...stateUserDetails,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleCheckboxChanged = (e) => {
+    setStateUserDetails({
+      ...stateUserDetails,
+      [e.target.name]: e.target.checked,
     });
   };
 
@@ -400,6 +404,25 @@ const AdminUser = () => {
                 value={stateUserDetails['email']}
                 onChange={handleOnchangeDetails}
                 name="email"
+              />
+            </Form.Item>
+            <Form.Item label="Admin" name="isAdmin">
+              <InputComponent
+                type="checkbox"
+                checked={stateUserDetails['isAdmin']}
+                onChange={handleCheckboxChanged}
+                name="isAdmin"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Role"
+              name="role"
+              rules={[{ required: true, message: 'Please input your role!' }]}
+            >
+              <InputComponent
+                value={stateUserDetails['role']}
+                onChange={handleOnchangeDetails}
+                name="role"
               />
             </Form.Item>
             <Form.Item
