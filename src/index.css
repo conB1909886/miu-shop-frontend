@@ -26,6 +26,7 @@ html {
   width: 200px;
 }
 
-.admin-products .ant-table-row {
+.admin-products .ant-table-row,
+.admin-inventory .ant-table-row {
   cursor: pointer;
 }

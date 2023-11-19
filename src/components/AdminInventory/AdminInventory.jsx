@@ -6,6 +6,7 @@ import TableComponent from '../TableComponent/TableComponent';
 import { useState } from 'react';
 import InputComponent from '../InputComponent/InputComponent';
 import * as InventoryService from '../../services/InventoryService';
+import * as ProductService from '../../services/ProductService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import Loading from '../../components/LoadingComponent/Loading';
 import { useEffect } from 'react';
@@ -19,8 +20,13 @@ const AdminInventory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rowSelected, setRowSelected] = useState('');
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const [isOpenProductDrawer, setIsOpenProductDrawer] = useState(false);
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+  const [selectedInventory, setSelectedInventory] = useState({});
+  const [products, setProducts] = useState([]);
+  const [loadingData, setLoadingData] = useState(false);
+
   const user = useSelector((state) => state?.user);
   const searchInput = useRef(null);
   const inittial = () => ({
@@ -80,6 +86,20 @@ const AdminInventory = () => {
     setIsLoadingUpdate(false);
   };
 
+  const getProductByInventory = async () => {
+    setLoadingData(true);
+    setProducts([]);
+    const response = await ProductService.getProductByInventory(selectedInventory._id);
+    setLoadingData(false);
+    setProducts(response.data);
+  };
+
+  useEffect(() => {
+    if (selectedInventory?._id) {
+      getProductByInventory();
+    }
+  }, [selectedInventory]);
+
   useEffect(() => {
     if (!isModalOpen) {
       form.setFieldsValue(stateInventoryDetails);
@@ -95,7 +115,8 @@ const AdminInventory = () => {
     }
   }, [rowSelected, isOpenDrawer]);
 
-  const handleDetailsInventory = () => {
+  const handleDetailsInventory = (e) => {
+    e.stopPropagation();
     setIsOpenDrawer(true);
   };
 
@@ -144,7 +165,10 @@ const AdminInventory = () => {
       <div>
         <DeleteOutlined
           style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }}
-          onClick={() => setIsModalOpenDelete(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsModalOpenDelete(true);
+          }}
         />
         <EditOutlined
           style={{ color: 'orange', fontSize: '30px', cursor: 'pointer' }}
@@ -252,6 +276,21 @@ const AdminInventory = () => {
       title: 'Action',
       dataIndex: 'action',
       render: renderAction,
+    },
+  ];
+
+  const productColumns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
     },
   ];
   const dataTable =
@@ -371,8 +410,13 @@ const AdminInventory = () => {
     );
   };
 
+  const handleClickRow = (record) => {
+    setSelectedInventory(record);
+    setIsOpenProductDrawer(true);
+  };
+
   return (
-    <div>
+    <div className="admin-inventory">
       <WrapperHeader>Quản lý kho</WrapperHeader>
       <div style={{ marginTop: '10px' }}>
         <Button
@@ -397,6 +441,7 @@ const AdminInventory = () => {
             return {
               onClick: (event) => {
                 setRowSelected(record._id);
+                handleClickRow(record);
               },
             };
           }}
@@ -542,6 +587,19 @@ const AdminInventory = () => {
             </Form.Item>
           </Form>
         </Loading>
+      </DrawerComponent>
+      <DrawerComponent
+        title="San pham trong kho"
+        isOpen={isOpenProductDrawer}
+        onClose={() => setIsOpenProductDrawer(false)}
+        width="90%"
+      >
+        <TableComponent
+          disableCheckbox
+          columns={productColumns}
+          data={products}
+          isLoading={loadingData}
+        />
       </DrawerComponent>
       <ModalComponent
         title="Xóa kho"
