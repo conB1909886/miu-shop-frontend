@@ -300,7 +300,6 @@ const AdminStats = () => {
     },
     {
       title: 'Lợi nhuận',
-      sorter: (a, b) => a.price - b.price,
       render: (_, record) => {
         const selled = record.selled ?? 0;
         const countInStock = record.countInStock ?? 0;
