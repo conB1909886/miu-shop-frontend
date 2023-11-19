@@ -12,6 +12,7 @@ import AdminUser from '../../components/AdminUser/AdminUser';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
 import OrderAdmin from '../../components/OrderAdmin/OrderAmin';
 import AdminInventory from '../../components/AdminInventory/AdminInventory';
+import AdminInventoryBuyTicket from '../../components/AdminInventoryBuyTicket/AdminInventoryBuyTicket';
 import * as OrderService from '../../services/OrderService';
 import * as ProductService from '../../services/ProductService';
 import * as UserService from '../../services/UserService';
@@ -30,6 +31,7 @@ const AdminPage = () => {
     getItem('Sản phẩm', 'products', <AppstoreOutlined />),
     getItem('Đơn hàng', 'orders', <ShoppingCartOutlined />),
     getItem('Kho', 'inventory', <ShopOutlined />),
+    getItem('Phiếu nhập kho', 'inventory-buy-ticket', <ShopOutlined />),
   ];
 
   const [keySelected, setKeySelected] = useState('');
@@ -40,7 +42,6 @@ const AdminPage = () => {
 
   const getAllProducts = async () => {
     const res = await ProductService.getAllProduct();
-    console.log('res1', res);
     return { data: res?.data, key: 'products' };
   };
 
@@ -85,6 +86,8 @@ const AdminPage = () => {
         return <OrderAdmin />;
       case 'inventory':
         return <AdminInventory />;
+      case 'inventory-buy-ticket':
+        return <AdminInventoryBuyTicket />;
       default:
         return <></>;
     }

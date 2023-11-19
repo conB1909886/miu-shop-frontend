@@ -592,8 +592,6 @@ const AdminProduct = () => {
             >
               <Select
                 name="inventory"
-                // defaultValue="lucy"
-                // style={{ width: 120 }}
                 value={stateProduct.inventory}
                 onChange={handleChangeSelectInventory}
                 options={renderInventoryOptions(allInventory?.data?.data)}
