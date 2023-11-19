@@ -20,6 +20,11 @@ html {
   font-size: 62.5%;
 }
 
-#basic_isDelivered, #basic_isPaid {
+#basic_isDelivered,
+#basic_isPaid {
   width: 200px;
+}
+
+.admin-products .ant-table-row {
+  cursor: pointer;
 }

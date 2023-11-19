@@ -44,6 +44,19 @@ export const renderOptions = (arr) => {
   return results;
 };
 
+export const renderInventoryOptions = (arr) => {
+  let results = [];
+  if (arr) {
+    results = arr?.map((opt) => {
+      return {
+        value: opt._id,
+        label: opt.name,
+      };
+    });
+  }
+  return results;
+};
+
 export const convertPrice = (price) => {
   try {
     const result = price?.toLocaleString().replaceAll(',', '.');

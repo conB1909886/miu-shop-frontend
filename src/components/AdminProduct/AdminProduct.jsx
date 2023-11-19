@@ -1,44 +1,40 @@
-import { Button, Form, Select, Space } from "antd";
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import React, { useRef } from "react";
-import { WrapperHeader, WrapperUploadFile } from "./style";
-import TableComponent from "../TableComponent/TableComponent";
-import { useState } from "react";
-import InputComponent from "../InputComponent/InputComponent";
-import { getBase64, renderOptions } from "../../utils";
-import * as ProductService from "../../services/ProductService";
-import { useMutationHooks } from "../../hooks/useMutationHook";
-import Loading from "../../components/LoadingComponent/Loading";
-import { useEffect } from "react";
-import * as message from "../../components/Message/Message";
-import { useQuery } from "@tanstack/react-query";
-import DrawerComponent from "../DrawerComponent/DrawerComponent";
-import { useSelector } from "react-redux";
-import ModalComponent from "../ModalComponent/ModalComponent";
+import { Button, Form, Select, Space } from 'antd';
+import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import React, { useRef } from 'react';
+import { WrapperHeader, WrapperUploadFile } from './style';
+import TableComponent from '../TableComponent/TableComponent';
+import { useState } from 'react';
+import InputComponent from '../InputComponent/InputComponent';
+import { getBase64, renderOptions, renderInventoryOptions } from '../../utils';
+import * as ProductService from '../../services/ProductService';
+import * as InventoryService from '../../services/InventoryService';
+import { useMutationHooks } from '../../hooks/useMutationHook';
+import Loading from '../../components/LoadingComponent/Loading';
+import { useEffect } from 'react';
+import * as message from '../../components/Message/Message';
+import { useQuery } from '@tanstack/react-query';
+import DrawerComponent from '../DrawerComponent/DrawerComponent';
+import { useSelector } from 'react-redux';
+import ModalComponent from '../ModalComponent/ModalComponent';
 
 const AdminProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [rowSelected, setRowSelected] = useState("");
+  const [rowSelected, setRowSelected] = useState('');
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const user = useSelector((state) => state?.user);
   const searchInput = useRef(null);
   const inittial = () => ({
-    name: "",
-    price: "",
-    description: "",
-    rating: "",
-    image: "",
-    type: "",
-    countInStock: "",
-    newType: "",
-    discount: "",
+    name: '',
+    price: '',
+    description: '',
+    rating: '',
+    image: '',
+    type: '',
+    countInStock: '',
+    newType: '',
+    discount: '',
   });
   const [stateProduct, setStateProduct] = useState(inittial());
   const [stateProductDetails, setStateProductDetails] = useState(inittial());
@@ -46,16 +42,7 @@ const AdminProduct = () => {
   const [form] = Form.useForm();
 
   const mutation = useMutationHooks((data) => {
-    const {
-      name,
-      price,
-      description,
-      rating,
-      image,
-      type,
-      countInStock,
-      discount,
-    } = data;
+    const { name, price, description, rating, image, type, countInStock, discount } = data;
     const res = ProductService.createProduct({
       name,
       price,
@@ -103,6 +90,7 @@ const AdminProduct = () => {
         type: res?.data?.type,
         countInStock: res?.data?.countInStock,
         discount: res?.data?.discount,
+        inventory: res?.data?.inventory,
       });
     }
     setIsLoadingUpdate(false);
@@ -134,12 +122,17 @@ const AdminProduct = () => {
         onSettled: () => {
           queryProduct.refetch();
         },
-      }
+      },
     );
   };
 
   const fetchAllTypeProduct = async () => {
     const res = await ProductService.getAllTypeProduct();
+    return res;
+  };
+
+  const fetchAllInventory = async () => {
+    const res = await InventoryService.getAllInventory();
     return res;
   };
 
@@ -164,23 +157,27 @@ const AdminProduct = () => {
   } = mutationDeletedMany;
 
   const queryProduct = useQuery({
-    queryKey: ["products"],
+    queryKey: ['products'],
     queryFn: getAllProducts,
   });
   const typeProduct = useQuery({
-    queryKey: ["type-product"],
+    queryKey: ['type-product'],
     queryFn: fetchAllTypeProduct,
+  });
+  const allInventory = useQuery({
+    queryKey: ['inventory-list'],
+    queryFn: fetchAllInventory,
   });
   const { isLoading: isLoadingProducts, data: products } = queryProduct;
   const renderAction = () => {
     return (
       <div>
         <DeleteOutlined
-          style={{ color: "red", fontSize: "30px", cursor: "pointer" }}
+          style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }}
           onClick={() => setIsModalOpenDelete(true)}
         />
         <EditOutlined
-          style={{ color: "orange", fontSize: "30px", cursor: "pointer" }}
+          style={{ color: 'orange', fontSize: '30px', cursor: 'pointer' }}
           onClick={handleDetailsProduct}
         />
       </div>
@@ -198,12 +195,7 @@ const AdminProduct = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div
         style={{
           padding: 8,
@@ -214,13 +206,11 @@ const AdminProduct = () => {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
-            display: "block",
+            display: 'block',
           }}
         />
         <Space>
@@ -250,7 +240,7 @@ const AdminProduct = () => {
     filterIcon: (filtered) => (
       <SearchOutlined
         style={{
-          color: filtered ? "#1890ff" : undefined,
+          color: filtered ? '#1890ff' : undefined,
         }}
       />
     ),
@@ -279,64 +269,64 @@ const AdminProduct = () => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
       sorter: (a, b) => a.name.length - b.name.length,
-      ...getColumnSearchProps("name"),
+      ...getColumnSearchProps('name'),
     },
     {
-      title: "Price",
-      dataIndex: "price",
+      title: 'Price',
+      dataIndex: 'price',
       sorter: (a, b) => a.price - b.price,
       filters: [
         {
-          text: ">= 50",
-          value: ">=",
+          text: '>= 50',
+          value: '>=',
         },
         {
-          text: "<= 50",
-          value: "<=",
+          text: '<= 50',
+          value: '<=',
         },
       ],
       onFilter: (value, record) => {
-        if (value === ">=") {
+        if (value === '>=') {
           return record.price >= 50;
         }
         return record.price <= 50;
       },
     },
     {
-      title: "Rating",
-      dataIndex: "rating",
+      title: 'Rating',
+      dataIndex: 'rating',
       sorter: (a, b) => a.rating - b.rating,
       filters: [
         {
-          text: ">= 3",
-          value: ">=",
+          text: '>= 3',
+          value: '>=',
         },
         {
-          text: "<= 3",
-          value: "<=",
+          text: '<= 3',
+          value: '<=',
         },
       ],
       onFilter: (value, record) => {
-        if (value === ">=") {
+        if (value === '>=') {
           return Number(record.rating) >= 3;
         }
         return Number(record.rating) <= 3;
       },
     },
     {
-      title: "Type",
-      dataIndex: "type",
+      title: 'Type',
+      dataIndex: 'type',
     },
     {
-      title: "Count in Stock",
-      dataIndex: "countInStock",
+      title: 'Count in Stock',
+      dataIndex: 'countInStock',
     },
     {
-      title: "Action",
-      dataIndex: "action",
+      title: 'Action',
+      dataIndex: 'action',
       render: renderAction,
     },
   ];
@@ -347,7 +337,7 @@ const AdminProduct = () => {
     });
 
   useEffect(() => {
-    if (isSuccess && data?.status === "OK") {
+    if (isSuccess && data?.status === 'OK') {
       message.success();
       handleCancel();
     } else if (isError) {
@@ -356,7 +346,7 @@ const AdminProduct = () => {
   }, [isSuccess]);
 
   useEffect(() => {
-    if (isSuccessDelectedMany && dataDeletedMany?.status === "OK") {
+    if (isSuccessDelectedMany && dataDeletedMany?.status === 'OK') {
       message.success();
     } else if (isErrorDeletedMany) {
       message.error();
@@ -364,7 +354,7 @@ const AdminProduct = () => {
   }, [isSuccessDelectedMany]);
 
   useEffect(() => {
-    if (isSuccessDelected && dataDeleted?.status === "OK") {
+    if (isSuccessDelected && dataDeleted?.status === 'OK') {
       message.success();
       handleCancelDelete();
     } else if (isErrorDeleted) {
@@ -375,19 +365,20 @@ const AdminProduct = () => {
   const handleCloseDrawer = () => {
     setIsOpenDrawer(false);
     setStateProductDetails({
-      name: "",
-      price: "",
-      description: "",
-      rating: "",
-      image: "",
-      type: "",
-      countInStock: "",
+      name: '',
+      price: '',
+      description: '',
+      rating: '',
+      image: '',
+      type: '',
+      countInStock: '',
+      inventory: '',
     });
     form.resetFields();
   };
 
   useEffect(() => {
-    if (isSuccessUpdated && dataUpdated?.status === "OK") {
+    if (isSuccessUpdated && dataUpdated?.status === 'OK') {
       message.success();
       handleCloseDrawer();
     } else if (isErrorUpdated) {
@@ -406,21 +397,22 @@ const AdminProduct = () => {
         onSettled: () => {
           queryProduct.refetch();
         },
-      }
+      },
     );
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setStateProduct({
-      name: "",
-      price: "",
-      description: "",
-      rating: "",
-      image: "",
-      type: "",
-      countInStock: "",
-      discount: "",
+      name: '',
+      price: '',
+      description: '',
+      rating: '',
+      image: '',
+      type: '',
+      countInStock: '',
+      discount: '',
+      inventory: '',
     });
     form.resetFields();
   };
@@ -432,10 +424,7 @@ const AdminProduct = () => {
       description: stateProduct.description,
       rating: stateProduct.rating,
       image: stateProduct.image,
-      type:
-        stateProduct.type === "add_type"
-          ? stateProduct.newType
-          : stateProduct.type,
+      type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
       countInStock: stateProduct.countInStock,
       discount: stateProduct.discount,
     };
@@ -457,6 +446,13 @@ const AdminProduct = () => {
     setStateProductDetails({
       ...stateProductDetails,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleOnchangeInventoryDetails = (value) => {
+    setStateProductDetails({
+      ...stateProductDetails,
+      inventory: value,
     });
   };
 
@@ -488,7 +484,7 @@ const AdminProduct = () => {
         onSettled: () => {
           queryProduct.refetch();
         },
-      }
+      },
     );
   };
 
@@ -499,23 +495,30 @@ const AdminProduct = () => {
     });
   };
 
+  const handleChangeSelectInventory = (value) => {
+    setStateProduct({
+      ...stateProduct,
+      inventory: value,
+    });
+  };
+
   return (
-    <div>
+    <div className="admin-products">
       <WrapperHeader>Quản lý sản phẩm</WrapperHeader>
-      <div style={{ marginTop: "10px" }}>
+      <div style={{ marginTop: '10px' }}>
         <Button
           style={{
-            height: "150px",
-            width: "150px",
-            borderRadius: "6px",
-            borderStyle: "dashed",
+            height: '150px',
+            width: '150px',
+            borderRadius: '6px',
+            borderStyle: 'dashed',
           }}
           onClick={() => setIsModalOpen(true)}
         >
-          <PlusOutlined style={{ fontSize: "60px" }} />
+          <PlusOutlined style={{ fontSize: '60px' }} />
         </Button>
       </div>
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: '20px' }}>
         <TableComponent
           handleDelteMany={handleDelteManyProducts}
           columns={columns}
@@ -525,6 +528,7 @@ const AdminProduct = () => {
             return {
               onClick: (event) => {
                 setRowSelected(record._id);
+                handleDetailsProduct();
               },
             };
           }}
@@ -549,19 +553,15 @@ const AdminProduct = () => {
             <Form.Item
               label="Name"
               name="name"
-              rules={[{ required: true, message: "Please input your name!" }]}
+              rules={[{ required: true, message: 'Please input your name!' }]}
             >
-              <InputComponent
-                value={stateProduct["name"]}
-                onChange={handleOnchange}
-                name="name"
-              />
+              <InputComponent value={stateProduct['name']} onChange={handleOnchange} name="name" />
             </Form.Item>
 
             <Form.Item
               label="Type"
               name="type"
-              rules={[{ required: true, message: "Please input your type!" }]}
+              rules={[{ required: true, message: 'Please input your type!' }]}
             >
               <Select
                 name="type"
@@ -572,11 +572,11 @@ const AdminProduct = () => {
                 options={renderOptions(typeProduct?.data?.data)}
               />
             </Form.Item>
-            {stateProduct.type === "add_type" && (
+            {stateProduct.type === 'add_type' && (
               <Form.Item
                 label="New type"
                 name="newType"
-                rules={[{ required: true, message: "Please input your type!" }]}
+                rules={[{ required: true, message: 'Please input your type!' }]}
               >
                 <InputComponent
                   value={stateProduct.newType}
@@ -586,11 +586,23 @@ const AdminProduct = () => {
               </Form.Item>
             )}
             <Form.Item
+              label="Inventory"
+              name="inventory"
+              rules={[{ required: true, message: 'Please input your inventory!' }]}
+            >
+              <Select
+                name="inventory"
+                // defaultValue="lucy"
+                // style={{ width: 120 }}
+                value={stateProduct.inventory}
+                onChange={handleChangeSelectInventory}
+                options={renderInventoryOptions(allInventory?.data?.data)}
+              />
+            </Form.Item>
+            <Form.Item
               label="Count inStock"
               name="countInStock"
-              rules={[
-                { required: true, message: "Please input your count inStock!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count inStock!' }]}
             >
               <InputComponent
                 value={stateProduct.countInStock}
@@ -601,15 +613,9 @@ const AdminProduct = () => {
             <Form.Item
               label="Price"
               name="price"
-              rules={[
-                { required: true, message: "Please input your count price!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count price!' }]}
             >
-              <InputComponent
-                value={stateProduct.price}
-                onChange={handleOnchange}
-                name="price"
-              />
+              <InputComponent value={stateProduct.price} onChange={handleOnchange} name="price" />
             </Form.Item>
             <Form.Item
               label="Description"
@@ -617,7 +623,7 @@ const AdminProduct = () => {
               rules={[
                 {
                   required: true,
-                  message: "Please input your count description!",
+                  message: 'Please input your count description!',
                 },
               ]}
             >
@@ -630,15 +636,9 @@ const AdminProduct = () => {
             <Form.Item
               label="Rating"
               name="rating"
-              rules={[
-                { required: true, message: "Please input your count rating!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count rating!' }]}
             >
-              <InputComponent
-                value={stateProduct.rating}
-                onChange={handleOnchange}
-                name="rating"
-              />
+              <InputComponent value={stateProduct.rating} onChange={handleOnchange} name="rating" />
             </Form.Item>
             <Form.Item
               label="Discount"
@@ -646,7 +646,7 @@ const AdminProduct = () => {
               rules={[
                 {
                   required: true,
-                  message: "Please input your discount of product!",
+                  message: 'Please input your discount of product!',
                 },
               ]}
             >
@@ -659,9 +659,7 @@ const AdminProduct = () => {
             <Form.Item
               label="Image"
               name="image"
-              rules={[
-                { required: true, message: "Please input your count image!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count image!' }]}
             >
               <WrapperUploadFile onChange={handleOnchangeAvatar} maxCount={1}>
                 <Button>Select File</Button>
@@ -669,11 +667,11 @@ const AdminProduct = () => {
                   <img
                     src={stateProduct?.image}
                     style={{
-                      height: "60px",
-                      width: "60px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      marginLeft: "10px",
+                      height: '60px',
+                      width: '60px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      marginLeft: '10px',
                     }}
                     alt="avatar"
                   />
@@ -706,10 +704,10 @@ const AdminProduct = () => {
             <Form.Item
               label="Name"
               name="name"
-              rules={[{ required: true, message: "Please input your name!" }]}
+              rules={[{ required: true, message: 'Please input your name!' }]}
             >
               <InputComponent
-                value={stateProductDetails["name"]}
+                value={stateProductDetails['name']}
                 onChange={handleOnchangeDetails}
                 name="name"
               />
@@ -718,20 +716,32 @@ const AdminProduct = () => {
             <Form.Item
               label="Type"
               name="type"
-              rules={[{ required: true, message: "Please input your type!" }]}
+              rules={[{ required: true, message: 'Please input your type!' }]}
             >
               <InputComponent
-                value={stateProductDetails["type"]}
+                value={stateProductDetails['type']}
                 onChange={handleOnchangeDetails}
                 name="type"
               />
             </Form.Item>
             <Form.Item
+              label="Inventory"
+              name="inventory"
+              rules={[{ required: true, message: 'Please input your inventory!' }]}
+            >
+              <Select
+                name="inventory"
+                // defaultValue="lucy"
+                // style={{ width: 120 }}
+                value={stateProductDetails.inventory}
+                onChange={handleOnchangeInventoryDetails}
+                options={renderInventoryOptions(allInventory?.data?.data)}
+              />
+            </Form.Item>
+            <Form.Item
               label="Count inStock"
               name="countInStock"
-              rules={[
-                { required: true, message: "Please input your count inStock!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count inStock!' }]}
             >
               <InputComponent
                 value={stateProductDetails.countInStock}
@@ -742,9 +752,7 @@ const AdminProduct = () => {
             <Form.Item
               label="Price"
               name="price"
-              rules={[
-                { required: true, message: "Please input your count price!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count price!' }]}
             >
               <InputComponent
                 value={stateProductDetails.price}
@@ -758,7 +766,7 @@ const AdminProduct = () => {
               rules={[
                 {
                   required: true,
-                  message: "Please input your count description!",
+                  message: 'Please input your count description!',
                 },
               ]}
             >
@@ -771,9 +779,7 @@ const AdminProduct = () => {
             <Form.Item
               label="Rating"
               name="rating"
-              rules={[
-                { required: true, message: "Please input your count rating!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count rating!' }]}
             >
               <InputComponent
                 value={stateProductDetails.rating}
@@ -787,7 +793,7 @@ const AdminProduct = () => {
               rules={[
                 {
                   required: true,
-                  message: "Please input your discount of product!",
+                  message: 'Please input your discount of product!',
                 },
               ]}
             >
@@ -800,24 +806,19 @@ const AdminProduct = () => {
             <Form.Item
               label="Image"
               name="image"
-              rules={[
-                { required: true, message: "Please input your count image!" },
-              ]}
+              rules={[{ required: true, message: 'Please input your count image!' }]}
             >
-              <WrapperUploadFile
-                onChange={handleOnchangeAvatarDetails}
-                maxCount={1}
-              >
+              <WrapperUploadFile onChange={handleOnchangeAvatarDetails} maxCount={1}>
                 <Button>Select File</Button>
                 {stateProductDetails?.image && (
                   <img
                     src={stateProductDetails?.image}
                     style={{
-                      height: "60px",
-                      width: "60px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      marginLeft: "10px",
+                      height: '60px',
+                      width: '60px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      marginLeft: '10px',
                     }}
                     alt="avatar"
                   />
