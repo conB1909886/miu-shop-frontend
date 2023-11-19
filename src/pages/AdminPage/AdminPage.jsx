@@ -1,11 +1,13 @@
 import { Menu } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { getItem } from '../../utils';
 import {
   UserOutlined,
   AppstoreOutlined,
   ShoppingCartOutlined,
   ShopOutlined,
+  ContainerOutlined,
+  SolutionOutlined,
 } from '@ant-design/icons';
 import HeaderComponent from '../../components/HeaderCompoent/HeaderComponent';
 import AdminUser from '../../components/AdminUser/AdminUser';
@@ -13,6 +15,7 @@ import AdminProduct from '../../components/AdminProduct/AdminProduct';
 import OrderAdmin from '../../components/OrderAdmin/OrderAmin';
 import AdminInventory from '../../components/AdminInventory/AdminInventory';
 import AdminInventoryBuyTicket from '../../components/AdminInventoryBuyTicket/AdminInventoryBuyTicket';
+import AdminStats from '../../components/AdminStats/AdminStats';
 import * as OrderService from '../../services/OrderService';
 import * as ProductService from '../../services/ProductService';
 import * as UserService from '../../services/UserService';
@@ -31,7 +34,8 @@ const AdminPage = () => {
     getItem('Sản phẩm', 'products', <AppstoreOutlined />),
     getItem('Đơn hàng', 'orders', <ShoppingCartOutlined />),
     getItem('Kho', 'inventory', <ShopOutlined />),
-    getItem('Phiếu nhập kho', 'inventory-buy-ticket', <ShopOutlined />),
+    getItem('Phiếu nhập kho', 'inventory-buy-ticket', <SolutionOutlined />),
+    getItem('Thống kê doanh thu', 'stats', <ContainerOutlined />),
   ];
 
   const [keySelected, setKeySelected] = useState('');
@@ -88,6 +92,8 @@ const AdminPage = () => {
         return <AdminInventory />;
       case 'inventory-buy-ticket':
         return <AdminInventoryBuyTicket />;
+      case 'stats':
+        return <AdminStats />;
       default:
         return <></>;
     }
