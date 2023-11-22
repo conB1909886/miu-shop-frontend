@@ -244,6 +244,21 @@ const AdminStats = () => {
       ...getColumnSearchProps('name'),
     },
     {
+      title: 'Cost Price',
+      dataIndex: 'costPrice',
+      sorter: (a, b) => a.costPrice - b.costPrice,
+      filters: [
+        {
+          text: '>= 50',
+          value: '>=',
+        },
+        {
+          text: '<= 50',
+          value: '<=',
+        },
+      ],
+    },
+    {
       title: 'Price',
       dataIndex: 'price',
       sorter: (a, b) => a.price - b.price,
@@ -303,9 +318,9 @@ const AdminStats = () => {
       render: (_, record) => {
         const selled = record.selled ?? 0;
         const countInStock = record.countInStock ?? 0;
-        const a = selled * record.price;
-        const b = countInStock * record.price;
-        return <span>{a - b}</span>;
+        const sellTotal = selled * record.price;
+        const inventoryTotal = selled * record.costPrice;
+        return <span>{sellTotal - inventoryTotal}</span>;
       },
     },
   ];

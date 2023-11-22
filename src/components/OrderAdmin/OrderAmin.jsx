@@ -115,9 +115,6 @@ const OrderAdmin = () => {
   };
 
   const renderAction = () => {
-    if (user.role === 'viewer') {
-      return null;
-    }
     return (
       <div>
         <EditOutlined

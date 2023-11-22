@@ -45,6 +45,8 @@ const AdminPage = () => {
         getItem('Người dùng', 'users', <UserOutlined />),
         getItem('Sản phẩm', 'products', <AppstoreOutlined />),
         getItem('Đơn hàng', 'orders', <ShoppingCartOutlined />),
+        getItem('Kho', 'inventory', <ShopOutlined />),
+        getItem('Phiếu nhập kho', 'inventory-buy-ticket', <SolutionOutlined />),
       ]);
     }
   }, [user]);

@@ -28,6 +28,7 @@ const AdminProduct = () => {
   const inittial = () => ({
     name: '',
     price: '',
+    costPrice: '',
     description: '',
     rating: '',
     image: '',
@@ -42,10 +43,12 @@ const AdminProduct = () => {
   const [form] = Form.useForm();
 
   const mutation = useMutationHooks((data) => {
-    const { name, price, description, rating, image, type, countInStock, discount } = data;
+    const { name, price, description, rating, image, type, countInStock, discount, costPrice } =
+      data;
     const res = ProductService.createProduct({
       name,
       price,
+      costPrice,
       description,
       rating,
       image,
@@ -84,6 +87,7 @@ const AdminProduct = () => {
       setStateProductDetails({
         name: res?.data?.name,
         price: res?.data?.price,
+        costPrice: res?.data?.costPrice,
         description: res?.data?.description,
         rating: res?.data?.rating,
         image: res?.data?.image,
@@ -170,9 +174,6 @@ const AdminProduct = () => {
   });
   const { isLoading: isLoadingProducts, data: products } = queryProduct;
   const renderAction = () => {
-    if (user.role === 'viewer') {
-      return null;
-    }
     return (
       <div>
         <DeleteOutlined
@@ -291,11 +292,26 @@ const AdminProduct = () => {
           value: '<=',
         },
       ],
+    },
+    {
+      title: 'Cost Price',
+      dataIndex: 'costPrice',
+      sorter: (a, b) => a.costPrice - b.costPrice,
+      filters: [
+        {
+          text: '>= 50',
+          value: '>=',
+        },
+        {
+          text: '<= 50',
+          value: '<=',
+        },
+      ],
       onFilter: (value, record) => {
         if (value === '>=') {
-          return record.price >= 50;
+          return record.costPrice >= 50;
         }
-        return record.price <= 50;
+        return record.costPrice <= 50;
       },
     },
     {
@@ -381,6 +397,7 @@ const AdminProduct = () => {
     setStateProductDetails({
       name: '',
       price: '',
+      costPrice: '',
       description: '',
       rating: '',
       image: '',
@@ -420,6 +437,7 @@ const AdminProduct = () => {
     setStateProduct({
       name: '',
       price: '',
+      costPrice: '',
       description: '',
       rating: '',
       image: '',
@@ -435,6 +453,7 @@ const AdminProduct = () => {
     const params = {
       name: stateProduct.name,
       price: stateProduct.price,
+      costPrice: stateProduct.costPrice,
       description: stateProduct.description,
       rating: stateProduct.rating,
       image: stateProduct.image,
@@ -770,6 +789,17 @@ const AdminProduct = () => {
                 value={stateProductDetails.price}
                 onChange={handleOnchangeDetails}
                 name="price"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Cost Price"
+              name="costPrice"
+              rules={[{ required: true, message: 'Please input your count price!' }]}
+            >
+              <InputComponent
+                value={stateProductDetails.costPrice}
+                onChange={handleOnchangeDetails}
+                name="costPrice"
               />
             </Form.Item>
             <Form.Item
