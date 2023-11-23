@@ -145,13 +145,13 @@ const OrderAdmin = () => {
       ...getColumnSearchProps('address'),
     },
     {
-      title: 'Paided',
+      title: 'Thanh toán',
       dataIndex: 'isPaid',
       sorter: (a, b) => a.isPaid.length - b.isPaid.length,
       ...getColumnSearchProps('isPaid'),
     },
     {
-      title: 'Shipped',
+      title: 'Giao hàng',
       dataIndex: 'isDelivered',
       sorter: (a, b) => a.isDelivered.length - b.isDelivered.length,
       ...getColumnSearchProps('isDelivered'),
@@ -239,8 +239,8 @@ const OrderAdmin = () => {
         phone: order?.shippingAddress?.phone,
         address: order?.shippingAddress?.address,
         paymentMethod: orderContant.payment[order?.paymentMethod],
-        isPaid: order?.isPaid ? 'YES' : 'NO',
-        isDelivered: order?.isDelivered ? 'YES' : 'NO',
+        isPaid: order?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán',
+        isDelivered: order?.isDelivered ? 'Thành công' : 'Đang giao',
         totalPrice: convertPrice(order?.totalPrice),
       };
     });
