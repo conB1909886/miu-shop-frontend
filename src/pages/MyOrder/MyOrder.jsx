@@ -44,8 +44,9 @@ const MyOrderPage = () => {
   };
 
   const handleShippedOrder = (order) => {
-    const res = OrderService.updateOrder(order._id, state?.token, { isDelivered: true });
-    return res;
+    OrderService.updateOrder(order._id, state?.token, { isDelivered: true }).then(() => {
+      queryOrder.refetch();
+    });
   };
 
   const mutation = useMutationHooks((data) => {
