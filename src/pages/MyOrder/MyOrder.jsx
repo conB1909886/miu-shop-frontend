@@ -44,7 +44,6 @@ const MyOrderPage = () => {
   };
 
   const handleShippedOrder = (order) => {
-    console.log(order, state?.token);
     const res = OrderService.updateOrder(order._id, state?.token, { isDelivered: true });
     return res;
   };
