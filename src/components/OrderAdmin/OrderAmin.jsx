@@ -12,7 +12,11 @@ import * as message from '../Message/Message';
 
 import * as OrderService from '../../services/OrderService';
 import { useQuery } from '@tanstack/react-query';
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { orderContant } from '../../contant';
 import PieChartComponent from './PieChart';
@@ -52,7 +56,12 @@ const OrderAdmin = () => {
   const [form] = Form.useForm();
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div
         style={{
           padding: 8,
@@ -63,7 +72,9 @@ const OrderAdmin = () => {
           // ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           // onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
@@ -188,7 +199,7 @@ const OrderAdmin = () => {
             setIsLoadingUpdate(false);
           });
         },
-      },
+      }
     );
   };
 
@@ -240,7 +251,7 @@ const OrderAdmin = () => {
         address: order?.shippingAddress?.address,
         paymentMethod: orderContant.payment[order?.paymentMethod],
         isPaid: order?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán',
-        isDelivered: order?.isDelivered ? 'Thành công' : 'Đang giao',
+        isDelivered: order?.isDelivered ? 'Thành Công' : 'Chờ xử lý',
         totalPrice: convertPrice(order?.totalPrice),
       };
     });
@@ -248,9 +259,9 @@ const OrderAdmin = () => {
   return (
     <div className="admin-order-page">
       <WrapperHeader>Quản lý đơn hàng</WrapperHeader>
-      <div style={{ height: 200, width: 200 }}>
+      {/* <div style={{ height: 200, width: 200 }}>
         <PieChartComponent data={orders?.data} />
-      </div>
+      </div> */}
       <div style={{ marginTop: '20px' }}>
         <TableComponent
           onRow={(record, rowIndex) => {
@@ -288,7 +299,7 @@ const OrderAdmin = () => {
                 name="isPaid"
               />
             </Form.Item>
-            <Form.Item label="Đã giao hàng" name="isDelivered">
+            <Form.Item label="Giao hàng" name="isDelivered">
               <InputComponent
                 type="checkbox"
                 checked={stateOrderDetails['isDelivered']}
