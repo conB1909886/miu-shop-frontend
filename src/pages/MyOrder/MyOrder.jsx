@@ -26,6 +26,7 @@ const MyOrderPage = () => {
     return res.data;
   };
   const user = useSelector((state) => state.user);
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const queryOrder = useQuery(
     { queryKey: ['orders'], queryFn: fetchMyOrder },
@@ -44,8 +45,10 @@ const MyOrderPage = () => {
   };
 
   const handleShippedOrder = (order) => {
+    setIsLoadingData(true);
     OrderService.updateOrder(order._id, state?.token, { isDelivered: true }).then(() => {
       queryOrder.refetch();
+      setIsLoadingData(false);
     });
   };
 
@@ -116,7 +119,7 @@ const MyOrderPage = () => {
   };
 
   return (
-    <Loading isLoading={isLoading || isLoadingCancel}>
+    <Loading isLoading={isLoading || isLoadingCancel || isLoadingData}>
       <WrapperContainer>
         <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
           <h4>Đơn hàng của tôi</h4>
