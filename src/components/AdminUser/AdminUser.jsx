@@ -15,7 +15,11 @@ import { useRef } from 'react';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import * as UserService from '../../services/UserService';
 import { useIsFetching, useQuery, useQueryClient } from '@tanstack/react-query';
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 
 const AdminUser = () => {
   const [rowSelected, setRowSelected] = useState('');
@@ -56,7 +60,7 @@ const AdminUser = () => {
         onSettled: () => {
           queryClient.invalidateQueries(['users']);
         },
-      },
+      }
     );
   };
 
@@ -120,7 +124,7 @@ const AdminUser = () => {
   const users = queryClient.getQueryData(['users']);
   const isFetchingUser = useIsFetching(['users']);
   const renderAction = () => {
-    if (user.role === 'viewer') {
+    if (user.role === 'nhanvien') {
       return null;
     }
     return (
@@ -148,7 +152,12 @@ const AdminUser = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div
         style={{
           padding: 8,
@@ -159,7 +168,9 @@ const AdminUser = () => {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
@@ -226,8 +237,11 @@ const AdminUser = () => {
       ...getColumnSearchProps('address'),
     },
     {
-      title: 'Admin',
+      title: 'Tai Khoan',
       dataIndex: 'isAdmin',
+      render: (_, record) => {
+        return record.isAdmin ? 'Admin' : 'Khach hang';
+      },
       filters: [
         {
           text: 'True',
@@ -242,6 +256,9 @@ const AdminUser = () => {
     {
       title: 'Role',
       dataIndex: 'role',
+      render: (_, record) => {
+        return record.isAdmin ? record.role : '-';
+      },
       ...getColumnSearchProps('role'),
     },
     {
@@ -259,7 +276,11 @@ const AdminUser = () => {
   const dataTable =
     users?.data?.length > 0 &&
     users?.data?.map((user) => {
-      return { ...user, key: user._id, isAdmin: user.isAdmin ? 'Yes' : 'No' };
+      return {
+        ...user,
+        key: user._id,
+        isAdmin: user.isAdmin,
+      };
     });
 
   useEffect(() => {
@@ -311,7 +332,7 @@ const AdminUser = () => {
         onSettled: () => {
           queryClient.invalidateQueries(['users']);
         },
-      },
+      }
     );
   };
 
@@ -346,7 +367,7 @@ const AdminUser = () => {
         onSettled: () => {
           queryClient.invalidateQueries(['users']);
         },
-      },
+      }
     );
   };
 
@@ -440,7 +461,9 @@ const AdminUser = () => {
             <Form.Item
               label="Adress"
               name="address"
-              rules={[{ required: true, message: 'Please input your  address!' }]}
+              rules={[
+                { required: true, message: 'Please input your  address!' },
+              ]}
             >
               <InputComponent
                 value={stateUserDetails.address}
@@ -454,7 +477,10 @@ const AdminUser = () => {
               name="avatar"
               rules={[{ required: true, message: 'Please input your image!' }]}
             >
-              <WrapperUploadFile onChange={handleOnchangeAvatarDetails} maxCount={1}>
+              <WrapperUploadFile
+                onChange={handleOnchangeAvatarDetails}
+                maxCount={1}
+              >
                 <Button>Select File</Button>
                 {stateUserDetails?.avatar && (
                   <img
