@@ -278,6 +278,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
               </button>
             </WrapperQualityProduct>
           </div>
+          <p>Số lượng còn lại trong kho: {productDetails?.countInStock}</p>
           <div style={{ display: 'flex', aliggItems: 'center', gap: '12px' }}>
             <div>
               <ButtonComponent

@@ -27,6 +27,7 @@ const OrderAdmin = () => {
   const inittial = () => ({
     isDelivered: false,
     isPaid: false,
+    isConfirmed: false,
   });
   const [stateOrderDetails, setStateOrderDetails] = React.useState(inittial());
 
@@ -145,13 +146,19 @@ const OrderAdmin = () => {
       ...getColumnSearchProps('address'),
     },
     {
+      title: 'Duyệt đơn hàng',
+      dataIndex: 'isConfirmed',
+      sorter: (a, b) => String(a.isConfirmed) - String(b.isConfirmed),
+      ...getColumnSearchProps('isConfirmed'),
+    },
+    {
       title: 'Thanh toán',
       dataIndex: 'isPaid',
       sorter: (a, b) => a.isPaid.length - b.isPaid.length,
       ...getColumnSearchProps('isPaid'),
     },
     {
-      title: 'Giao hàng',
+      title: 'Vận chuyển',
       dataIndex: 'isDelivered',
       sorter: (a, b) => a.isDelivered.length - b.isDelivered.length,
       ...getColumnSearchProps('isDelivered'),
@@ -212,6 +219,7 @@ const OrderAdmin = () => {
       setStateOrderDetails({
         isDelivered: res?.data?.isDelivered,
         isPaid: res?.data?.isPaid,
+        isConfirmed: res?.data?.isConfirmed,
       });
     }
     setIsLoadingUpdate(false);
@@ -240,7 +248,8 @@ const OrderAdmin = () => {
         address: order?.shippingAddress?.address,
         paymentMethod: orderContant.payment[order?.paymentMethod],
         isPaid: order?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán',
-        isDelivered: order?.isDelivered ? 'Thành công' : 'Đang giao',
+        isDelivered: order?.isDelivered ? 'Thành công' : 'Chờ xử lý',
+        isConfirmed: order?.isConfirmed ? 'Đã duyệt' : 'Chưa duyệt',
         totalPrice: convertPrice(order?.totalPrice),
       };
     });
@@ -280,6 +289,14 @@ const OrderAdmin = () => {
             autoComplete="on"
             form={form}
           >
+            <Form.Item label="Duyệt đơn hàng" name="isConfirmed">
+              <InputComponent
+                type="checkbox"
+                checked={stateOrderDetails['isConfirmed']}
+                onChange={handleOnchangeDetails}
+                name="isConfirmed"
+              />
+            </Form.Item>
             <Form.Item label="Đã thanh toán" name="isPaid">
               <InputComponent
                 type="checkbox"
@@ -288,7 +305,7 @@ const OrderAdmin = () => {
                 name="isPaid"
               />
             </Form.Item>
-            <Form.Item label="Đã giao hàng" name="isDelivered">
+            <Form.Item label="Vận chuyển" name="isDelivered">
               <InputComponent
                 type="checkbox"
                 checked={stateOrderDetails['isDelivered']}
