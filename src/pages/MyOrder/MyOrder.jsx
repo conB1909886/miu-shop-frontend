@@ -101,8 +101,6 @@ const MyOrderPage = () => {
   }, [isErrorCancle, isSuccessCancel]);
 
   const renderProduct = (data, isDelivered) => {
-    console.log(data);
-
     return data?.map((order) => {
       return (
         <WrapperHeaderItem key={order?._id}>
