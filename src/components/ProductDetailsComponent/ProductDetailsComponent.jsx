@@ -238,7 +238,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
           />
           <div
             style={{
-              margin: '10px 0 20px',
+              margin: '8px 0 20px',
               padding: '10px 0',
               borderTop: '1px solid #e5e5e5',
               borderBottom: '1px solid #e5e5e5',
