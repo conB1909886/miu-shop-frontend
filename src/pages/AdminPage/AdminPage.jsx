@@ -40,7 +40,7 @@ const AdminPage = () => {
   const [items, setItems] = useState(initialItems);
 
   React.useEffect(() => {
-    if (user.role === 'viewer') {
+    if (user.role === 'nhanvien') {
       setItems([
         getItem('Người dùng', 'users', <UserOutlined />),
         getItem('Sản phẩm', 'products', <AppstoreOutlined />),
@@ -131,10 +131,18 @@ const AdminPage = () => {
         />
         <div style={{ flex: 1, padding: '15px 0 15px 15px' }}>
           <Loading
-            isLoading={memoCount && Object.keys(memoCount) && Object.keys(memoCount).length !== 3}
+            isLoading={
+              memoCount &&
+              Object.keys(memoCount) &&
+              Object.keys(memoCount).length !== 3
+            }
           >
             {!keySelected && (
-              <CustomizedContent data={memoCount} colors={COLORS} setKeySelected={setKeySelected} />
+              <CustomizedContent
+                data={memoCount}
+                colors={COLORS}
+                setKeySelected={setKeySelected}
+              />
             )}
           </Loading>
           {renderPage(keySelected)}
