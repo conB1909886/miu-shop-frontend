@@ -1,5 +1,9 @@
 import { Button, Form, Space, Select, DatePicker } from 'antd';
-import { PlusOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import React, { useRef } from 'react';
 import { WrapperHeader } from './style';
 import TableComponent from '../TableComponent/TableComponent';
@@ -33,13 +37,17 @@ const AdminInventoryBuyTicket = () => {
     product: '',
     note: '',
   });
-  const [stateInventoryBuyTicket, setStateInventoryBuyTicket] = useState(inittial());
-  const [stateInventoryBuyTicketDetails, setStateInventoryBuyTicketDetails] = useState(inittial());
+  const [stateInventoryBuyTicket, setStateInventoryBuyTicket] = useState(
+    inittial()
+  );
+  const [stateInventoryBuyTicketDetails, setStateInventoryBuyTicketDetails] =
+    useState(inittial());
 
   const [form] = Form.useForm();
 
   const mutation = useMutationHooks((data) => {
-    const { ticketId, date, inventory, note, selectedProduct, amount, price } = data;
+    const { ticketId, date, inventory, note, selectedProduct, amount, price } =
+      data;
     const p = allProducts?.data?.data?.find((i) => i._id === selectedProduct);
     const res = InventoryBuyTicketService.createInventoryBuyTicket({
       ticketId,
@@ -59,7 +67,9 @@ const AdminInventoryBuyTicket = () => {
   });
   const mutationUpdate = useMutationHooks((data) => {
     const { id, token, ...rests } = data;
-    const res = InventoryBuyTicketService.updateInventoryBuyTicket(id, token, { ...rests });
+    const res = InventoryBuyTicketService.updateInventoryBuyTicket(id, token, {
+      ...rests,
+    });
     return res;
   });
 
@@ -71,7 +81,10 @@ const AdminInventoryBuyTicket = () => {
 
   const mutationDeletedMany = useMutationHooks((data) => {
     const { token, ...ids } = data;
-    const res = InventoryBuyTicketService.deleteManyInventoryBuyTicket(ids, token);
+    const res = InventoryBuyTicketService.deleteManyInventoryBuyTicket(
+      ids,
+      token
+    );
     return res;
   });
 
@@ -81,7 +94,9 @@ const AdminInventoryBuyTicket = () => {
   };
 
   const fetchGetDetailsInventoryBuyTicket = async (rowSelected) => {
-    const res = await InventoryBuyTicketService.getDetailsInventoryBuyTicket(rowSelected);
+    const res = await InventoryBuyTicketService.getDetailsInventoryBuyTicket(
+      rowSelected
+    );
     if (res?.data) {
       setStateInventoryBuyTicketDetails({
         ticketId: res?.data?.ticketId,
@@ -120,7 +135,7 @@ const AdminInventoryBuyTicket = () => {
         onSettled: () => {
           queryInventoryBuyTicket.refetch();
         },
-      },
+      }
     );
   };
 
@@ -169,7 +184,8 @@ const AdminInventoryBuyTicket = () => {
     queryFn: fetchAllProducts,
   });
 
-  const { isLoading: isLoadingInventoryBuyTickets, data: inventories } = queryInventoryBuyTicket;
+  const { isLoading: isLoadingInventoryBuyTickets, data: inventories } =
+    queryInventoryBuyTicket;
   const renderAction = () => {
     return (
       <div>
@@ -189,7 +205,12 @@ const AdminInventoryBuyTicket = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div
         style={{
           padding: 8,
@@ -200,7 +221,9 @@ const AdminInventoryBuyTicket = () => {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
@@ -291,7 +314,9 @@ const AdminInventoryBuyTicket = () => {
         ...inventory,
         key: inventory._id,
         date: new Date(inventory.date).toLocaleDateString(),
-        inventory: allInventory?.data?.data?.find((i) => i._id === inventory.inventory)?.name,
+        inventory: allInventory?.data?.data?.find(
+          (i) => i._id === inventory.inventory
+        )?.name,
         initialProduct: inventory.products?.[0].name,
       };
     });
@@ -354,7 +379,7 @@ const AdminInventoryBuyTicket = () => {
         onSettled: () => {
           queryInventoryBuyTicket.refetch();
         },
-      },
+      }
     );
   };
 
@@ -418,6 +443,11 @@ const AdminInventoryBuyTicket = () => {
     });
   };
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < new Date();
+  };
+
   const handleOnchangeDetails = (e) => {
     setStateInventoryBuyTicketDetails({
       ...stateInventoryBuyTicketDetails,
@@ -427,12 +457,16 @@ const AdminInventoryBuyTicket = () => {
 
   const onUpdateInventoryBuyTicket = () => {
     mutationUpdate.mutate(
-      { id: rowSelected, token: user?.access_token, ...stateInventoryBuyTicketDetails },
+      {
+        id: rowSelected,
+        token: user?.access_token,
+        ...stateInventoryBuyTicketDetails,
+      },
       {
         onSettled: () => {
           queryInventoryBuyTicket.refetch();
         },
-      },
+      }
     );
   };
 
@@ -503,6 +537,7 @@ const AdminInventoryBuyTicket = () => {
                 value={stateInventoryBuyTicket.date}
                 onChange={handleChangeDate}
                 name="date"
+                disabledDate={disabledDate}
               />
             </Form.Item>
             <Form.Item

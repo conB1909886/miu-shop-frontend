@@ -32,7 +32,7 @@ const MyOrderPage = () => {
     { queryKey: ['orders'], queryFn: fetchMyOrder },
     {
       enabled: state?.id && state?.token,
-    },
+    }
   );
   const { isLoading, data } = queryOrder;
 
@@ -44,9 +44,19 @@ const MyOrderPage = () => {
     });
   };
 
+  const handleComment = (id) => {
+    navigate(`/product-details/${id}`, {
+      state: {
+        token: state?.token,
+      },
+    });
+  };
+
   const handleShippedOrder = (order) => {
     setIsLoadingData(true);
-    OrderService.updateOrder(order._id, state?.token, { isDelivered: true }).then(() => {
+    OrderService.updateOrder(order._id, state?.token, {
+      isDelivered: true,
+    }).then(() => {
       queryOrder.refetch();
       setIsLoadingData(false);
     });
@@ -60,12 +70,17 @@ const MyOrderPage = () => {
 
   const handleCanceOrder = (order) => {
     mutation.mutate(
-      { id: order._id, token: state?.token, orderItems: order?.orderItems, userId: user.id },
+      {
+        id: order._id,
+        token: state?.token,
+        orderItems: order?.orderItems,
+        userId: user.id,
+      },
       {
         onSuccess: () => {
           queryOrder.refetch();
         },
-      },
+      }
     );
   };
   const {
@@ -85,7 +100,9 @@ const MyOrderPage = () => {
     }
   }, [isErrorCancle, isSuccessCancel]);
 
-  const renderProduct = (data) => {
+  const renderProduct = (data, isDelivered) => {
+    console.log(data);
+
     return data?.map((order) => {
       return (
         <WrapperHeaderItem key={order?._id}>
@@ -108,9 +125,27 @@ const MyOrderPage = () => {
               marginLeft: '10px',
             }}
           >
-            {order?.name}
+            <p>{order?.name}</p>
+            {isDelivered && (
+              <ButtonComponent
+                onClick={() => handleComment(order?.product)}
+                size={40}
+                styleButton={{
+                  height: '36px',
+                  border: '1px solid #9255FD',
+                  borderRadius: '4px',
+                }}
+                textbutton={'Nhận xét'}
+                styleTextButton={{
+                  color: '#9255FD',
+                  fontSize: '14px',
+                }}
+              ></ButtonComponent>
+            )}
           </div>
-          <span style={{ fontSize: '13px', color: '#242424', marginLeft: 'auto' }}>
+          <span
+            style={{ fontSize: '13px', color: '#242424', marginLeft: 'auto' }}
+          >
             {convertPrice(order?.price)}
           </span>
         </WrapperHeaderItem>
@@ -128,25 +163,49 @@ const MyOrderPage = () => {
               return (
                 <WrapperItemOrder key={order?._id}>
                   <WrapperStatus>
-                    <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Trạng thái</span>
+                    <span style={{ fontSize: '14px', fontWeight: 'bold' }}>
+                      Trạng thái
+                    </span>
                     <div>
-                      <span style={{ color: 'rgb(255, 66, 78)' }}>Vận chuyển: </span>
-                      <span style={{ color: 'rgb(90, 32, 193)', fontWeight: 'bold' }}>{`${
+                      <span style={{ color: 'rgb(255, 66, 78)' }}>
+                        Vận chuyển:{' '}
+                      </span>
+                      <span
+                        style={{
+                          color: 'rgb(90, 32, 193)',
+                          fontWeight: 'bold',
+                        }}
+                      >{`${
                         order.isDelivered ? 'Đã giao hàng' : 'Chưa giao hàng'
                       }`}</span>
                     </div>
                     <div>
-                      <span style={{ color: 'rgb(255, 66, 78)' }}>Thanh toán: </span>
-                      <span style={{ color: 'rgb(90, 32, 193)', fontWeight: 'bold' }}>{`${
+                      <span style={{ color: 'rgb(255, 66, 78)' }}>
+                        Thanh toán:{' '}
+                      </span>
+                      <span
+                        style={{
+                          color: 'rgb(90, 32, 193)',
+                          fontWeight: 'bold',
+                        }}
+                      >{`${
                         order.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'
                       }`}</span>
                     </div>
                   </WrapperStatus>
-                  {renderProduct(order?.orderItems)}
+                  {renderProduct(order?.orderItems, order?.isDelivered)}
                   <WrapperFooterItem>
                     <div>
-                      <span style={{ color: 'rgb(255, 66, 78)' }}>Tổng tiền: </span>
-                      <span style={{ fontSize: '13px', color: 'rgb(56, 56, 61)', fontWeight: 700 }}>
+                      <span style={{ color: 'rgb(255, 66, 78)' }}>
+                        Tổng tiền:{' '}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '13px',
+                          color: 'rgb(56, 56, 61)',
+                          fontWeight: 700,
+                        }}
+                      >
                         {convertPrice(order?.totalPrice)}
                       </span>
                     </div>
@@ -161,7 +220,10 @@ const MyOrderPage = () => {
                             borderRadius: '4px',
                           }}
                           textbutton={'Hủy đơn hàng'}
-                          styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                          styleTextButton={{
+                            color: '#9255FD',
+                            fontSize: '14px',
+                          }}
                         ></ButtonComponent>
                       )}
                       <ButtonComponent
@@ -175,6 +237,7 @@ const MyOrderPage = () => {
                         textbutton={'Xem chi tiết'}
                         styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
                       ></ButtonComponent>
+
                       {!order.isDelivered && (
                         <ButtonComponent
                           onClick={() => handleShippedOrder(order)}
@@ -185,7 +248,10 @@ const MyOrderPage = () => {
                             borderRadius: '4px',
                           }}
                           textbutton={'Đã nhận hàng'}
-                          styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                          styleTextButton={{
+                            color: '#9255FD',
+                            fontSize: '14px',
+                          }}
                         ></ButtonComponent>
                       )}
                     </div>
