@@ -238,7 +238,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
           />
           <div
             style={{
-              margin: '10px 0 20px',
+              margin: '8px 0 20px',
               padding: '10px 0',
               borderTop: '1px solid #e5e5e5',
               borderBottom: '1px solid #e5e5e5',
@@ -278,6 +278,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
               </button>
             </WrapperQualityProduct>
           </div>
+          <p>Số lượng còn lại trong kho: {productDetails?.countInStock}</p>
           <div style={{ display: 'flex', aliggItems: 'center', gap: '12px' }}>
             <div>
               <ButtonComponent

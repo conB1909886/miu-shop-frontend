@@ -22,7 +22,8 @@ html {
 
 #basic_isDelivered,
 #basic_isPaid,
-#basic_isAdmin {
+#basic_isAdmin,
+#basic_isConfirmed {
   width: 200px;
 }
 
