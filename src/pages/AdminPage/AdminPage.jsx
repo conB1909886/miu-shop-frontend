@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { getItem } from '../../utils';
 import {
   UserOutlined,
+  KeyOutlined,
   AppstoreOutlined,
   ShoppingCartOutlined,
   ShopOutlined,
@@ -11,6 +12,7 @@ import {
 } from '@ant-design/icons';
 import HeaderComponent from '../../components/HeaderCompoent/HeaderComponent';
 import AdminUser from '../../components/AdminUser/AdminUser';
+import AdminUserPermission from '../../components/AdminUserPermission/AdminUser';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
 import OrderAdmin from '../../components/OrderAdmin/OrderAmin';
 import AdminInventory from '../../components/AdminInventory/AdminInventory';
@@ -30,6 +32,7 @@ const AdminPage = () => {
   const user = useSelector((state) => state?.user);
 
   const initialItems = [
+    getItem('Phân quyền', 'admin-users', <KeyOutlined />),
     getItem('Người dùng', 'users', <UserOutlined />),
     getItem('Sản phẩm', 'products', <AppstoreOutlined />),
     getItem('Đơn hàng', 'orders', <ShoppingCartOutlined />),
@@ -95,6 +98,8 @@ const AdminPage = () => {
 
   const renderPage = (key) => {
     switch (key) {
+      case 'admin-users':
+        return <AdminUserPermission />;
       case 'users':
         return <AdminUser />;
       case 'products':

@@ -1,4 +1,4 @@
-import { Button, Form, Space } from 'antd';
+import { Button, Form, Space, Select } from 'antd';
 import React from 'react';
 import { WrapperHeader, WrapperUploadFile } from './style';
 import TableComponent from '../TableComponent/TableComponent';
@@ -8,20 +8,16 @@ import Loading from '../LoadingComponent/Loading';
 import ModalComponent from '../ModalComponent/ModalComponent';
 import { getBase64 } from '../../utils';
 import { useEffect } from 'react';
-import * as message from '../../components/Message/Message';
+import * as message from '../Message/Message';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRef } from 'react';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import * as UserService from '../../services/UserService';
 import { useIsFetching, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 
-const AdminUser = () => {
+const AdminUserPermission = () => {
   const [rowSelected, setRowSelected] = useState('');
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
@@ -60,7 +56,7 @@ const AdminUser = () => {
         onSettled: () => {
           queryClient.invalidateQueries(['users']);
         },
-      }
+      },
     );
   };
 
@@ -152,12 +148,7 @@ const AdminUser = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div
         style={{
           padding: 8,
@@ -168,9 +159,7 @@ const AdminUser = () => {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
@@ -217,6 +206,11 @@ const AdminUser = () => {
     },
   });
 
+  const mapRole = {
+    admin: 'Admin',
+    nhanvien: 'Nhân viên'
+  }
+
   const columns = [
     {
       title: 'Name',
@@ -237,6 +231,14 @@ const AdminUser = () => {
       ...getColumnSearchProps('address'),
     },
     {
+      title: 'Role',
+      dataIndex: 'role',
+      render: (_, record) => {
+        return mapRole[record.role]
+      },
+      ...getColumnSearchProps('role'),
+    },
+    {
       title: 'Phone',
       dataIndex: 'phone',
       sorter: (a, b) => a.phone - b.phone,
@@ -250,13 +252,15 @@ const AdminUser = () => {
   ];
   const dataTable =
     users?.data?.length > 0 &&
-    users?.data?.map((user) => {
-      return {
-        ...user,
-        key: user._id,
-        isAdmin: user.isAdmin,
-      };
-    }).filter((i) => !i.isAdmin)
+    users?.data
+      ?.map((user) => {
+        return {
+          ...user,
+          key: user._id,
+          isAdmin: user.isAdmin,
+        };
+      })
+      .filter((i) => i.isAdmin);
 
   useEffect(() => {
     if (isSuccessDelected && dataDeleted?.status === 'OK') {
@@ -307,7 +311,7 @@ const AdminUser = () => {
         onSettled: () => {
           queryClient.invalidateQueries(['users']);
         },
-      }
+      },
     );
   };
 
@@ -342,8 +346,38 @@ const AdminUser = () => {
         onSettled: () => {
           queryClient.invalidateQueries(['users']);
         },
-      }
+      },
     );
+  };
+
+  const renderRoleOptions = () => {
+    const arr = [
+      {
+        id: 'admin',
+        name: 'Admin',
+      },
+      {
+        id: 'nhanvien',
+        name: 'Nhân viên',
+      },
+    ];
+    let results = [];
+    if (arr) {
+      results = arr?.map((opt) => {
+        return {
+          value: opt.id,
+          label: opt.name,
+        };
+      });
+    }
+    return results;
+  };
+
+  const handleChangeSelectRole = (value) => {
+    setStateUserDetails({
+      ...stateUserDetails,
+      role: value,
+    });
   };
 
   return (
@@ -413,12 +447,13 @@ const AdminUser = () => {
             <Form.Item
               label="Role"
               name="role"
-              rules={[{ required: true, message: 'Please input your role!' }]}
+              rules={[{ required: true, message: 'Please input field!' }]}
             >
-              <InputComponent
-                value={stateUserDetails['role']}
-                onChange={handleOnchangeDetails}
+              <Select
                 name="role"
+                value={stateUserDetails['role']}
+                onChange={handleChangeSelectRole}
+                options={renderRoleOptions()}
               />
             </Form.Item>
             <Form.Item
@@ -436,9 +471,7 @@ const AdminUser = () => {
             <Form.Item
               label="Adress"
               name="address"
-              rules={[
-                { required: true, message: 'Please input your  address!' },
-              ]}
+              rules={[{ required: true, message: 'Please input your  address!' }]}
             >
               <InputComponent
                 value={stateUserDetails.address}
@@ -452,10 +485,7 @@ const AdminUser = () => {
               name="avatar"
               rules={[{ required: true, message: 'Please input your image!' }]}
             >
-              <WrapperUploadFile
-                onChange={handleOnchangeAvatarDetails}
-                maxCount={1}
-              >
+              <WrapperUploadFile onChange={handleOnchangeAvatarDetails} maxCount={1}>
                 <Button>Select File</Button>
                 {stateUserDetails?.avatar && (
                   <img
@@ -494,4 +524,4 @@ const AdminUser = () => {
   );
 };
 
-export default AdminUser;
+export default AdminUserPermission;
