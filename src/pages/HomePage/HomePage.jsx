@@ -1,10 +1,14 @@
 import React from 'react';
 import SliderComponent from '../../components/SliderComponent/SliderComponent';
 import TypeProduct from '../../components/TypeProduct/TypeProduct';
-import { WrapperButtonMore, WrapperProducts, WrapperTypeProduct } from './style';
-import slider1 from '../../assets/images/slider_11.jpg';
-import slider2 from '../../assets/images/slider_2.webp';
-import slider3 from '../../assets/images/slider_10.jpg';
+import {
+  WrapperButtonMore,
+  WrapperProducts,
+  WrapperTypeProduct,
+} from './style';
+import slider1 from '../../assets/images/slider_16.jpg';
+import slider2 from '../../assets/images/slider_23.jpg';
+import slider3 from '../../assets/images/slider_17.jpg';
 
 import CardComponent from '../../components/CardComponent/CardComponent';
 import { useQuery } from '@tanstack/react-query';
@@ -65,7 +69,10 @@ const HomePage = () => {
             })}
           </WrapperTypeProduct>
         </div>
-        <div className="body" style={{ width: '100%', backgroundColor: '#efefef' }}>
+        <div
+          className="body"
+          style={{ width: '100%', backgroundColor: '#efefef' }}
+        >
           <div id="container" style={{ width: '1270px', margin: '0 auto' }}>
             <SliderComponent arrImages={[slider1, slider2, slider3]} />
             <div>
@@ -102,14 +109,23 @@ const HomePage = () => {
                   type="outline"
                   styleButton={{
                     border: `1px solid ${
-                      products?.total === products?.data?.length ? '#f5f5f5' : '#9255FD'
+                      products?.total === products?.data?.length
+                        ? '#f5f5f5'
+                        : '#9255FD'
                     }`,
-                    color: `${products?.total === products?.data?.length ? '#f5f5f5' : '#9255FD'}`,
+                    color: `${
+                      products?.total === products?.data?.length
+                        ? '#f5f5f5'
+                        : '#9255FD'
+                    }`,
                     width: '240px',
                     height: '38px',
                     borderRadius: '4px',
                   }}
-                  disabled={products?.total === products?.data?.length || products?.totalPage === 1}
+                  disabled={
+                    products?.total === products?.data?.length ||
+                    products?.totalPage === 1
+                  }
                   styleTextButton={{
                     fontWeight: 500,
                     color: products?.total === products?.data?.length && '#fff',

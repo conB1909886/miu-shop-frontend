@@ -1,5 +1,10 @@
 import { Button, Form, Select, Space } from 'antd';
-import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import React, { useRef } from 'react';
 import { WrapperHeader, WrapperUploadFile } from './style';
 import TableComponent from '../TableComponent/TableComponent';
@@ -42,7 +47,16 @@ const AdminStats = () => {
   const [form] = Form.useForm();
 
   const mutation = useMutationHooks((data) => {
-    const { name, price, description, rating, image, type, countInStock, discount } = data;
+    const {
+      name,
+      price,
+      description,
+      rating,
+      image,
+      type,
+      countInStock,
+      discount,
+    } = data;
     const res = ProductService.createProduct({
       name,
       price,
@@ -122,7 +136,7 @@ const AdminStats = () => {
         onSettled: () => {
           queryProduct.refetch();
         },
-      },
+      }
     );
   };
 
@@ -178,7 +192,12 @@ const AdminStats = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div
         style={{
           padding: 8,
@@ -189,7 +208,9 @@ const AdminStats = () => {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
@@ -244,7 +265,7 @@ const AdminStats = () => {
       ...getColumnSearchProps('name'),
     },
     {
-      title: 'Cost Price',
+      title: 'Giá nhập',
       dataIndex: 'costPrice',
       sorter: (a, b) => a.costPrice - b.costPrice,
       filters: [
@@ -259,7 +280,7 @@ const AdminStats = () => {
       ],
     },
     {
-      title: 'Price',
+      title: 'Giá bán',
       dataIndex: 'price',
       sorter: (a, b) => a.price - b.price,
       filters: [
@@ -391,7 +412,7 @@ const AdminStats = () => {
         onSettled: () => {
           queryProduct.refetch();
         },
-      },
+      }
     );
   };
 
@@ -418,7 +439,10 @@ const AdminStats = () => {
       description: stateProduct.description,
       rating: stateProduct.rating,
       image: stateProduct.image,
-      type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
+      type:
+        stateProduct.type === 'add_type'
+          ? stateProduct.newType
+          : stateProduct.type,
       countInStock: stateProduct.countInStock,
       discount: stateProduct.discount,
     };
@@ -478,7 +502,7 @@ const AdminStats = () => {
         onSettled: () => {
           queryProduct.refetch();
         },
-      },
+      }
     );
   };
 
@@ -534,7 +558,11 @@ const AdminStats = () => {
               name="name"
               rules={[{ required: true, message: 'Please input your name!' }]}
             >
-              <InputComponent value={stateProduct['name']} onChange={handleOnchange} name="name" />
+              <InputComponent
+                value={stateProduct['name']}
+                onChange={handleOnchange}
+                name="name"
+              />
             </Form.Item>
 
             <Form.Item
@@ -567,7 +595,9 @@ const AdminStats = () => {
             <Form.Item
               label="Inventory"
               name="inventory"
-              rules={[{ required: true, message: 'Please input your inventory!' }]}
+              rules={[
+                { required: true, message: 'Please input your inventory!' },
+              ]}
             >
               <Select
                 name="inventory"
@@ -579,7 +609,9 @@ const AdminStats = () => {
             <Form.Item
               label="Count inStock"
               name="countInStock"
-              rules={[{ required: true, message: 'Please input your count inStock!' }]}
+              rules={[
+                { required: true, message: 'Please input your count inStock!' },
+              ]}
             >
               <InputComponent
                 value={stateProduct.countInStock}
@@ -590,9 +622,15 @@ const AdminStats = () => {
             <Form.Item
               label="Price"
               name="price"
-              rules={[{ required: true, message: 'Please input your count price!' }]}
+              rules={[
+                { required: true, message: 'Please input your count price!' },
+              ]}
             >
-              <InputComponent value={stateProduct.price} onChange={handleOnchange} name="price" />
+              <InputComponent
+                value={stateProduct.price}
+                onChange={handleOnchange}
+                name="price"
+              />
             </Form.Item>
             <Form.Item
               label="Description"
@@ -613,9 +651,15 @@ const AdminStats = () => {
             <Form.Item
               label="Rating"
               name="rating"
-              rules={[{ required: true, message: 'Please input your count rating!' }]}
+              rules={[
+                { required: true, message: 'Please input your count rating!' },
+              ]}
             >
-              <InputComponent value={stateProduct.rating} onChange={handleOnchange} name="rating" />
+              <InputComponent
+                value={stateProduct.rating}
+                onChange={handleOnchange}
+                name="rating"
+              />
             </Form.Item>
             <Form.Item
               label="Discount"
@@ -636,7 +680,9 @@ const AdminStats = () => {
             <Form.Item
               label="Image"
               name="image"
-              rules={[{ required: true, message: 'Please input your count image!' }]}
+              rules={[
+                { required: true, message: 'Please input your count image!' },
+              ]}
             >
               <WrapperUploadFile onChange={handleOnchangeAvatar} maxCount={1}>
                 <Button>Select File</Button>
@@ -704,7 +750,9 @@ const AdminStats = () => {
             <Form.Item
               label="Inventory"
               name="inventory"
-              rules={[{ required: true, message: 'Please input your inventory!' }]}
+              rules={[
+                { required: true, message: 'Please input your inventory!' },
+              ]}
             >
               <Select
                 name="inventory"
@@ -718,7 +766,9 @@ const AdminStats = () => {
             <Form.Item
               label="Count inStock"
               name="countInStock"
-              rules={[{ required: true, message: 'Please input your count inStock!' }]}
+              rules={[
+                { required: true, message: 'Please input your count inStock!' },
+              ]}
             >
               <InputComponent
                 value={stateProductDetails.countInStock}
@@ -729,7 +779,9 @@ const AdminStats = () => {
             <Form.Item
               label="Price"
               name="price"
-              rules={[{ required: true, message: 'Please input your count price!' }]}
+              rules={[
+                { required: true, message: 'Please input your count price!' },
+              ]}
             >
               <InputComponent
                 value={stateProductDetails.price}
@@ -756,7 +808,9 @@ const AdminStats = () => {
             <Form.Item
               label="Rating"
               name="rating"
-              rules={[{ required: true, message: 'Please input your count rating!' }]}
+              rules={[
+                { required: true, message: 'Please input your count rating!' },
+              ]}
             >
               <InputComponent
                 value={stateProductDetails.rating}
@@ -783,9 +837,14 @@ const AdminStats = () => {
             <Form.Item
               label="Image"
               name="image"
-              rules={[{ required: true, message: 'Please input your count image!' }]}
+              rules={[
+                { required: true, message: 'Please input your count image!' },
+              ]}
             >
-              <WrapperUploadFile onChange={handleOnchangeAvatarDetails} maxCount={1}>
+              <WrapperUploadFile
+                onChange={handleOnchangeAvatarDetails}
+                maxCount={1}
+              >
                 <Button>Select File</Button>
                 {stateProductDetails?.image && (
                   <img

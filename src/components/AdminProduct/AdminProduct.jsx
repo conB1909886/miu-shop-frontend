@@ -303,7 +303,7 @@ const AdminProduct = () => {
       ...getColumnSearchProps('name'),
     },
     {
-      title: 'Price',
+      title: 'Giá bán',
       dataIndex: 'price',
       sorter: (a, b) => a.price - b.price,
       filters: [
@@ -318,7 +318,7 @@ const AdminProduct = () => {
       ],
     },
     {
-      title: 'Cost Price',
+      title: 'Giá nhập',
       dataIndex: 'costPrice',
       sorter: (a, b) => a.costPrice - b.costPrice,
       filters: [
@@ -674,7 +674,7 @@ const AdminProduct = () => {
               />
             </Form.Item>
             <Form.Item
-              label="Cost Price"
+              label="Giá nhập"
               name="costPrice"
               rules={[
                 { required: true, message: 'Please input your cost price!' },
@@ -687,7 +687,7 @@ const AdminProduct = () => {
               />
             </Form.Item>
             <Form.Item
-              label="Price"
+              label="Giá bán"
               name="price"
               rules={[
                 { required: true, message: 'Please input your count price!' },
@@ -844,7 +844,7 @@ const AdminProduct = () => {
               />
             </Form.Item>
             <Form.Item
-              label="Price"
+              label="Giá bán"
               name="price"
               rules={[
                 { required: true, message: 'Please input your count price!' },
@@ -857,7 +857,7 @@ const AdminProduct = () => {
               />
             </Form.Item>
             <Form.Item
-              label="Cost Price"
+              label="Giá nhập"
               name="costPrice"
               rules={[
                 { required: true, message: 'Please input your count price!' },
