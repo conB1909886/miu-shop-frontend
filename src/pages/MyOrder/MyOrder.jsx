@@ -166,6 +166,19 @@ const MyOrderPage = () => {
                     </span>
                     <div>
                       <span style={{ color: 'rgb(255, 66, 78)' }}>
+                        Nhận hàng:{' '}
+                      </span>
+                      <span
+                        style={{
+                          color: 'rgb(90, 32, 193)',
+                          fontWeight: 'bold',
+                        }}
+                      >{`${
+                        order.isDelivered ? 'Đã nhận hàng' : 'Chưa nhận hàng'
+                      }`}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: 'rgb(255, 66, 78)' }}>
                         Vận chuyển:{' '}
                       </span>
                       <span
@@ -174,20 +187,7 @@ const MyOrderPage = () => {
                           fontWeight: 'bold',
                         }}
                       >{`${
-                        order.isDelivered ? 'Đã giao hàng' : 'Chưa giao hàng'
-                      }`}</span>
-                    </div>
-                    <div>
-                      <span style={{ color: 'rgb(255, 66, 78)' }}>
-                        Thanh toán:{' '}
-                      </span>
-                      <span
-                        style={{
-                          color: 'rgb(90, 32, 193)',
-                          fontWeight: 'bold',
-                        }}
-                      >{`${
-                        order.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'
+                        order.isPaid ? 'Đã giao hàng' : 'Chưa giao hàng'
                       }`}</span>
                     </div>
                   </WrapperStatus>

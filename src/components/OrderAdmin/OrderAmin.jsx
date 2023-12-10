@@ -163,13 +163,13 @@ const OrderAdmin = () => {
       ...getColumnSearchProps('isConfirmed'),
     },
     {
-      title: 'Thanh toán',
+      title: 'Vận chuyển',
       dataIndex: 'isPaid',
       sorter: (a, b) => a.isPaid.length - b.isPaid.length,
       ...getColumnSearchProps('isPaid'),
     },
     {
-      title: 'Vận chuyển',
+      title: 'Nhận hàng',
       dataIndex: 'isDelivered',
       sorter: (a, b) => a.isDelivered.length - b.isDelivered.length,
       ...getColumnSearchProps('isDelivered'),
@@ -258,8 +258,8 @@ const OrderAdmin = () => {
         phone: order?.shippingAddress?.phone,
         address: order?.shippingAddress?.address,
         paymentMethod: orderContant.payment[order?.paymentMethod],
-        isPaid: order?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán',
-        isDelivered: order?.isDelivered ? 'Thành công' : 'Chờ xử lý',
+        isPaid: order?.isPaid ? 'Đã giao hàng' : 'Chưa giao hàng',
+        isDelivered: order?.isDelivered ? 'Đã nhận hàng' : 'Chưa nhận hàng',
         isConfirmed: order?.isConfirmed ? 'Đã duyệt' : 'Chưa duyệt',
         totalPrice: convertPrice(order?.totalPrice),
       };
@@ -308,7 +308,7 @@ const OrderAdmin = () => {
                 name="isConfirmed"
               />
             </Form.Item>
-            <Form.Item label="Đã thanh toán" name="isPaid">
+            <Form.Item label="Vận chuyển" name="isPaid">
               <InputComponent
                 type="checkbox"
                 checked={stateOrderDetails['isPaid']}
@@ -316,14 +316,14 @@ const OrderAdmin = () => {
                 name="isPaid"
               />
             </Form.Item>
-            <Form.Item label="Vận chuyển" name="isDelivered">
+            {/* <Form.Item label="Vận chuyển" name="isDelivered">
               <InputComponent
                 type="checkbox"
                 checked={stateOrderDetails['isDelivered']}
                 onChange={handleOnchangeDetails}
                 name="isDelivered"
               />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
               <Button type="primary" htmlType="submit">
                 Apply

@@ -1,5 +1,10 @@
 import { Button, Form, Space } from 'antd';
-import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import React, { useRef } from 'react';
 import { WrapperHeader } from './style';
 import TableComponent from '../TableComponent/TableComponent';
@@ -33,10 +38,12 @@ const AdminInventory = () => {
     name: '',
     address: '',
     keeper: '',
-    maxAmount: 1,
+    maxAmount: 1000,
   });
   const [stateInventory, setStateInventory] = useState(inittial());
-  const [stateInventoryDetails, setStateInventoryDetails] = useState(inittial());
+  const [stateInventoryDetails, setStateInventoryDetails] = useState(
+    inittial()
+  );
 
   const [form] = Form.useForm();
 
@@ -89,7 +96,9 @@ const AdminInventory = () => {
   const getProductByInventory = async () => {
     setLoadingData(true);
     setProducts([]);
-    const response = await ProductService.getProductByInventory(selectedInventory._id);
+    const response = await ProductService.getProductByInventory(
+      selectedInventory._id
+    );
     setLoadingData(false);
     setProducts(response.data);
   };
@@ -127,7 +136,7 @@ const AdminInventory = () => {
         onSettled: () => {
           queryInventory.refetch();
         },
-      },
+      }
     );
   };
 
@@ -186,7 +195,12 @@ const AdminInventory = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div
         style={{
           padding: 8,
@@ -197,7 +211,9 @@ const AdminInventory = () => {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
@@ -263,12 +279,12 @@ const AdminInventory = () => {
       sorter: (a, b) => a.keeper - b.keeper,
       ...getColumnSearchProps('keeper'),
     },
-    {
-      title: 'Max Amount',
-      dataIndex: 'maxAmount',
-      sorter: (a, b) => a.maxAmount - b.maxAmount,
-      ...getColumnSearchProps('maxAmount'),
-    },
+    // {
+    //   title: 'Max Amount',
+    //   dataIndex: 'maxAmount',
+    //   sorter: (a, b) => a.maxAmount - b.maxAmount,
+    //   ...getColumnSearchProps('maxAmount'),
+    // },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -353,7 +369,7 @@ const AdminInventory = () => {
         onSettled: () => {
           queryInventory.refetch();
         },
-      },
+      }
     );
   };
 
@@ -403,7 +419,7 @@ const AdminInventory = () => {
         onSettled: () => {
           queryInventory.refetch();
         },
-      },
+      }
     );
   };
 
@@ -446,7 +462,7 @@ const AdminInventory = () => {
       </div>
       <ModalComponent
         forceRender
-        title="Tạo kho moi"
+        title="Tạo kho mới"
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}
@@ -493,7 +509,7 @@ const AdminInventory = () => {
                 name="keeper"
               />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               label="Max Amount"
               name="maxAmount"
               rules={[{ required: true, message: 'Please input max amount!' }]}
@@ -503,7 +519,7 @@ const AdminInventory = () => {
                 onChange={handleOnchange}
                 name="maxAmount"
               />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
               <Button type="primary" htmlType="submit">
                 Submit
@@ -561,7 +577,7 @@ const AdminInventory = () => {
               />
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
               label="Max Amount"
               name="maxAmount"
               rules={[
@@ -576,7 +592,7 @@ const AdminInventory = () => {
                 onChange={handleOnchangeDetails}
                 name="maxAmount"
               />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
               <Button type="primary" htmlType="submit">
                 Apply
@@ -586,7 +602,7 @@ const AdminInventory = () => {
         </Loading>
       </DrawerComponent>
       <DrawerComponent
-        title="San pham trong kho"
+        title="Sản phẩm trong kho"
         isOpen={isOpenProductDrawer}
         onClose={() => setIsOpenProductDrawer(false)}
         width="90%"
