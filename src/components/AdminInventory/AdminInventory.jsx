@@ -31,6 +31,7 @@ const AdminInventory = () => {
   const [selectedInventory, setSelectedInventory] = useState({});
   const [products, setProducts] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
+  const showDetailRef = React.useRef();
 
   const user = useSelector((state) => state?.user);
   const searchInput = useRef(null);
@@ -118,6 +119,9 @@ const AdminInventory = () => {
   }, [form, stateInventoryDetails, isModalOpen]);
 
   useEffect(() => {
+    if(!isOpenDrawer) {
+      showDetailRef.value = false;
+    }
     if (rowSelected && isOpenDrawer) {
       setIsLoadingUpdate(true);
       fetchGetDetailsInventory(rowSelected);
@@ -125,7 +129,7 @@ const AdminInventory = () => {
   }, [rowSelected, isOpenDrawer]);
 
   const handleDetailsInventory = (e) => {
-    e.stopPropagation();
+    showDetailRef.value = true
     setIsOpenDrawer(true);
   };
 
@@ -347,6 +351,7 @@ const AdminInventory = () => {
       maxAmount: 1,
     });
     form.resetFields();
+    showDetailRef.value = false;
   };
 
   useEffect(() => {
@@ -424,6 +429,7 @@ const AdminInventory = () => {
   };
 
   const handleClickRow = (record) => {
+    if(showDetailRef.value) return;
     setSelectedInventory(record);
     setIsOpenProductDrawer(true);
   };
